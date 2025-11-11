@@ -1,0 +1,7 @@
+com\softly\fonoteca\Modelos\Conexion.class
+com\softly\fonoteca\Vistas\Usuarios.class
+com\softly\fonoteca\Fonoteca.class
+com\softly\fonoteca\Vistas\Login.class
+com\softly\fonoteca\Controladores\UsuarioControlador.class
+com\softly\fonoteca\Modelos\Usuario.class
+com\softly\fonoteca\Vistas\Canciones.class
