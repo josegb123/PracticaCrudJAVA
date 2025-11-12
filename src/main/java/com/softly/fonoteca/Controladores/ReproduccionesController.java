@@ -17,8 +17,7 @@ import java.util.Objects;
 
 /**
  * Controlador para la visualización y gestión (CRUD) de las reproducciones registradas.
- * Se encarga de cargar los datos de la tabla, convertir las claves foráneas (IDs)
- * a sus respectivos nombres para la visualización, y manejar las operaciones de la vista.
+ * Maneja la lógica de la vista y las operaciones CRUD.
  */
 public class ReproduccionesController {
 
@@ -26,11 +25,6 @@ public class ReproduccionesController {
     private final ReproduccionesVista vista;
     private final ReproduccionDAO consultas;
     private final BaseView vistaPrincipal;
-
-    /**
-     * Modelo de tabla con los datos crudos (contiene IDs) obtenido directamente de la BD.
-     * Es crucial para obtener los IDs al seleccionar una fila y ejecutar el CRUD.
-     */
     private DefaultTableModel rawModel;
 
     /**
@@ -48,25 +42,17 @@ public class ReproduccionesController {
         vista.cmbUsuarios.setModel(SQLQuerys.consultarDatos("usuarios", "idUsuario", "nombres"));
 
         agregarListeners();
+
+        // Listener de prueba eliminado, ya que no era parte de la lógica central
+        // vista.txtFechaReproduccion.addDateChangeListener(dateChangeEvent -> { ... });
     }
 
-    // ------------------------------------------------------------------------------------------
-    // LÓGICA DE CARGA Y TRANSFORMACIÓN DE DATOS
-    // ------------------------------------------------------------------------------------------
+    // --- LÓGICA DE CARGA Y TRANSFORMACIÓN DE DATOS ---
 
-    /**
-     * Carga todos los registros de 'reproducciones', convierte IDs a nombres y asigna
-     * el modelo final (sin IDs crudos) al JTable de la vista.
-     */
     private void cargarTablaReproducciones() {
         try {
-            // 1. Obtener el modelo crudo con los IDs originales de la BD.
             this.rawModel = SQLQuerys.buildTableModel("reproducciones", new HashMap<>());
-
-            // 2. Convertir IDs a nombres para el modelo de la vista.
             DefaultTableModel finalModel = convertirIDsANombres(this.rawModel);
-
-            // 3. Asignar el modelo final a la tabla.
             vista.tablaReproducciones.setModel(finalModel);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(vista, STR."Error al cargar la tabla de reproducciones: \{e.getMessage()}", "Error de BD", JOptionPane.ERROR_MESSAGE);
@@ -74,19 +60,12 @@ public class ReproduccionesController {
         }
     }
 
-    /**
-     * Recorre el modelo de tabla (con IDs), consulta la BD para obtener los nombres
-     * de usuarios y canciones, y genera un nuevo modelo listo para la vista.
-     *
-     * @param model El DefaultTableModel que contiene los IDs de la BD.
-     * @return Un nuevo DefaultTableModel con los IDs reemplazados por nombres/títulos.
-     */
     private DefaultTableModel convertirIDsANombres(DefaultTableModel model) {
         if (model.getRowCount() == 0) return model;
 
         String[] newColumnNames = {"Usuario", "Canción", "Fecha", "Hora", "Segundos"};
         DefaultTableModel newModel = new DefaultTableModel(newColumnNames, 0);
-
+        // ... (Lógica de mapeo de columnas y bucle sigue igual) ...
         int col_idUsuario = model.findColumn("idUsuario");
         int col_idCancion = model.findColumn("idCancion");
         int col_fecha = model.findColumn("fechaReproduccion");
@@ -120,20 +99,14 @@ public class ReproduccionesController {
                 System.err.println(STR."❌ ERROR: Fallo de conversión de tipos en la fila \{i}. Asegúrese que los IDs son INT.");
             }
         }
-
         return newModel;
     }
 
-    // ------------------------------------------------------------------------------------------
-    // LÓGICA CRUD
-    // ------------------------------------------------------------------------------------------
+    // --- LÓGICA CRUD ---
 
-    /**
-     * Guarda una nueva reproducción usando la lógica de UPSERT (insertar o modificar).
-     */
     private void agregarReproduccion() {
         if (!validarCampos() || !mapearVistaAModelo()) return;
-
+        // ... (Lógica CRUD sigue igual) ...
         if (consultas.vincular(modelo)) {
             JOptionPane.showMessageDialog(vista, "Reproducción guardada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             cargarTablaReproducciones();
@@ -142,12 +115,9 @@ public class ReproduccionesController {
         }
     }
 
-    /**
-     * Modifica el registro de la reproducción actualmente seleccionado/mostrado.
-     */
     private void modificarReproduccion() {
         if (!validarCampos() || !mapearVistaAModelo()) return;
-
+        // ... (Lógica CRUD sigue igual) ...
         if (consultas.modificar(modelo)) {
             JOptionPane.showMessageDialog(vista, "Reproducción modificada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             cargarTablaReproducciones();
@@ -156,12 +126,9 @@ public class ReproduccionesController {
         }
     }
 
-    /**
-     * Elimina el registro de la reproducción actualmente seleccionado.
-     */
     private void eliminarReproduccion() {
         if (!mapearVistaAModelo()) return;
-
+        // ... (Lógica CRUD sigue igual) ...
         int confirm = JOptionPane.showConfirmDialog(vista,
                 "¿Está seguro de eliminar la reproducción?",
                 "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
@@ -177,26 +144,28 @@ public class ReproduccionesController {
     }
 
     /**
-     * Valida que los campos requeridos tengan datos y estén en el formato correcto.
-     *
-     * @return true si la validación es exitosa.
+     * Valida la presencia de datos y los formatos numéricos.
+     * La validación de formato de Fecha/Hora se puede simplificar confiando en la librería.
      */
     private boolean validarCampos() {
         try {
-            // Limpiar y parsear Segundos
+            // Validación de Segundos
             String segundosStr = vista.txtSegundosReproduccidos.getText().replaceAll("[^0-9]", "").trim();
             Integer.parseInt(segundosStr);
 
-            // Validar formato de fecha y hora
-            LocalDate.parse(vista.txtFechaReproduccion.getText());
-            LocalTime.parse(vista.txtHoraReproduccion.getText());
+            // Validación crucial de la librería: Los campos deben tener un valor.
+            if (vista.txtFechaReproduccion.getDate() == null) {
+                JOptionPane.showMessageDialog(vista, "Debe seleccionar una Fecha válida.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            if (vista.txtHoraReproduccion.getTime() == null) {
+                JOptionPane.showMessageDialog(vista, "Debe seleccionar una Hora válida.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
 
             return true;
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(vista, "Formato de Segundos inválido.", "Error de Formato", JOptionPane.WARNING_MESSAGE);
-            return false;
-        } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(vista, "Formato de Fecha/Hora inválido (debe ser YYYY-MM-DD y HH:MM:SS).", "Error de Formato", JOptionPane.WARNING_MESSAGE);
             return false;
         }
     }
@@ -208,10 +177,9 @@ public class ReproduccionesController {
      */
     private boolean mapearVistaAModelo() {
         try {
-
-            // Obtener IDs de ComboBoxes
-            int idUsuario = ((ComboBoxItem) Objects.requireNonNull(vista.cmbUsuarios.getSelectedItem())).getId();
-            int idCancion = ((ComboBoxItem) Objects.requireNonNull(vista.cmbCanciones.getSelectedItem())).getId();
+            // Obtener IDs de ComboBoxes (simplificación de NPE)
+            int idUsuario = ((ComboBoxItem) Objects.requireNonNull(vista.cmbUsuarios.getSelectedItem(), "Usuario no seleccionado")).getId();
+            int idCancion = ((ComboBoxItem) Objects.requireNonNull(vista.cmbCanciones.getSelectedItem(), "Canción no seleccionada")).getId();
 
             modelo.setIdUsuario(idUsuario);
             modelo.setIdCancion(idCancion);
@@ -220,73 +188,66 @@ public class ReproduccionesController {
             String segundosStr = vista.txtSegundosReproduccidos.getText().replaceAll("[^0-9]", "").trim();
             int segundos = Integer.parseInt(segundosStr);
 
-            modelo.setFechaReproduccion(LocalDate.parse(vista.txtFechaReproduccion.getText()));
-            modelo.setHoraReproduccion(LocalTime.parse(vista.txtHoraReproduccion.getText()));
+            // 🌟 SIMPLIFICACIÓN: Usar los métodos getDate() y getTime() directamente
+            // La librería garantiza que si llegamos aquí y pasa validarCampos(), los valores no son null.
+            modelo.setFechaReproduccion(vista.txtFechaReproduccion.getDate());
+            modelo.setHoraReproduccion(vista.txtHoraReproduccion.getTime());
             modelo.setSegundosReproducidos(segundos);
 
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(vista, "Faltan datos de ID o el formato de fecha/hora/segundos es incorrecto.", "Error de Datos", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(vista, STR."Error al mapear datos: \{e.getMessage()}", "Error de Datos", JOptionPane.ERROR_MESSAGE);
             System.err.println(STR."❌ ERROR al mapear vista a modelo: \{e.getMessage()}");
             return false;
         }
     }
 
 
-    // ------------------------------------------------------------------------------------------
-    // MANEJO DE EVENTOS Y VISTA
-    // ------------------------------------------------------------------------------------------
+    // --- MANEJO DE EVENTOS Y VISTA ---
 
-    /**
-     * Configura y añade todos los listeners necesarios a los componentes de la vista.
-     */
     private void agregarListeners() {
-        // Listener para la selección de fila en la tabla.
+        // ... (Listeners CRUD siguen igual) ...
         vista.tablaReproducciones.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 cargarDetalleFilaSeleccionada();
             }
         });
 
-        // Listeners de botones CRUD
         vista.agregarButton.addActionListener(_ -> agregarReproduccion());
         vista.modificarButton.addActionListener(_ -> modificarReproduccion());
         vista.eliminarButton.addActionListener(_ -> eliminarReproduccion());
-
-        // Listener para el botón de regresar.
         vista.regresarButton.addActionListener(_ -> cerrarVista());
     }
 
     /**
      * Carga el detalle de la reproducción seleccionada en los campos de texto y Combos.
-     * Es crucial cargar los IDs originales en el modelo DTO (this.modelo) para el CRUD.
      */
     private void cargarDetalleFilaSeleccionada() {
         int selectedRow = vista.tablaReproducciones.getSelectedRow();
 
         if (selectedRow != -1 && this.rawModel != null) {
             try {
-                // Obtener los IDs y datos del modelo ORIGINAL (rawModel)
                 int idUsuario = (int) rawModel.getValueAt(selectedRow, rawModel.findColumn("idUsuario"));
                 int idCancion = (int) rawModel.getValueAt(selectedRow, rawModel.findColumn("idCancion"));
 
-                // Cargar los IDs al DTO del controlador.
                 modelo.setIdUsuario(idUsuario);
                 modelo.setIdCancion(idCancion);
 
-                String fecha = rawModel.getValueAt(selectedRow, rawModel.findColumn("fechaReproduccion")).toString();
+                String fechaStr = rawModel.getValueAt(selectedRow, rawModel.findColumn("fechaReproduccion")).toString();
 
                 int col_hora_raw = rawModel.findColumn("HoraReproduccion");
                 if (col_hora_raw == -1) col_hora_raw = rawModel.findColumn("horaReproduccion");
-                String hora = rawModel.getValueAt(selectedRow, col_hora_raw).toString();
+                String horaStr = rawModel.getValueAt(selectedRow, col_hora_raw).toString();
 
                 int segundos = (int) rawModel.getValueAt(selectedRow, rawModel.findColumn("segundosReproducidos"));
 
-                // Asignar al modelo y mostrar detalles en los componentes de la vista
                 SQLQuerys.setSelectedItemById(vista.cmbUsuarios, idUsuario);
                 SQLQuerys.setSelectedItemById(vista.cmbCanciones, idCancion);
-                vista.txtFechaReproduccion.setText(fecha);
-                vista.txtHoraReproduccion.setText(hora);
+
+                // 🌟 SIMPLIFICACIÓN: Usar los métodos setDate() y setTime() directamente en los componentes
+                vista.txtFechaReproduccion.setDate(LocalDate.parse(fechaStr));
+                vista.txtHoraReproduccion.setTime(LocalTime.parse(horaStr));
+
                 vista.txtSegundosReproduccidos.setText(String.valueOf(segundos));
 
             } catch (Exception e) {
@@ -296,9 +257,6 @@ public class ReproduccionesController {
         }
     }
 
-    /**
-     * Oculta la vista actual y muestra la vista principal.
-     */
     private void cerrarVista() {
         this.vista.setVisible(false);
         if (this.vistaPrincipal != null) {
@@ -306,9 +264,6 @@ public class ReproduccionesController {
         }
     }
 
-    /**
-     * Configura y hace visible la ventana de Reproducciones.
-     */
     public void iniciar() {
         this.vista.pack();
         this.vista.setDefaultCloseOperation(ReproduccionesVista.EXIT_ON_CLOSE);
