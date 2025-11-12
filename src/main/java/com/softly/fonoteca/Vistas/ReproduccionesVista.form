@@ -76,7 +76,7 @@
       <component id="89db8" class="javax.swing.JTextField" binding="txtSegundosReproduccidos">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="250" height="25"/>
+            <minimum-size width="230" height="25"/>
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>

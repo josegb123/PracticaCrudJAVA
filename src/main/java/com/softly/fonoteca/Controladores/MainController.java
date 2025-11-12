@@ -1,15 +1,14 @@
 package com.softly.fonoteca.Controladores;
 
+import com.softly.fonoteca.Modelos.DAOs.CalificacionDAO;
 import com.softly.fonoteca.Modelos.DAOs.ReproduccionDAO;
+import com.softly.fonoteca.Modelos.DTOs.Calificacion;
 import com.softly.fonoteca.Modelos.DTOs.Cancion;
 import com.softly.fonoteca.Modelos.DAOs.CancionDAO;
 import com.softly.fonoteca.Modelos.DTOs.Reproduccion;
 import com.softly.fonoteca.Modelos.DTOs.Usuario;
 import com.softly.fonoteca.Modelos.DAOs.UsuarioDAO;
-import com.softly.fonoteca.Vistas.CancionesVista;
-import com.softly.fonoteca.Vistas.MainView;
-import com.softly.fonoteca.Vistas.ReproduccionesVista;
-import com.softly.fonoteca.Vistas.UsuariosVista;
+import com.softly.fonoteca.Vistas.*;
 
 public class MainController {
 
@@ -24,6 +23,7 @@ public class MainController {
         this.vistaPrincipal.cancionesButton.addActionListener(e -> launchCancionModule());
         this.vistaPrincipal.usuariosButton.addActionListener(e -> launchUsuariosModule());
         this.vistaPrincipal.reproduccionesButton.addActionListener(e->launchReproduccionesModule());
+        this.vistaPrincipal.calificacionesButton.addActionListener(e->launchComentariosModule());
         this.vistaPrincipal.salirButton.addActionListener(e-> this.vistaPrincipal.dispose());
     }
 
@@ -61,6 +61,17 @@ public class MainController {
         UsuarioController usuarioController = new UsuarioController(modeloUsuario, vistaUsuarios, consultasUsuario,this.vistaPrincipal);
         usuarioController.iniciar();
 
+    }
+
+    private void launchComentariosModule() {
+        this.vistaPrincipal.setVisible(false);
+
+        Calificacion modeloCalificacion = new Calificacion();
+        CalificacionDAO consultasCalificacion = new CalificacionDAO();
+        CalificacionesVista vistaCalificacions = new CalificacionesVista();
+
+        CalificacionesController calificacionController = new CalificacionesController(modeloCalificacion, vistaCalificacions, consultasCalificacion,this.vistaPrincipal);
+        calificacionController.iniciar();
     }
 
     public void iniciar() {
