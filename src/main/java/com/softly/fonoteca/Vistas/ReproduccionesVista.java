@@ -11,6 +11,11 @@ public class ReproduccionesVista extends JFrame {
     public JTextField txtSegundosReproduccidos;
     public JPanel contentPane;
     public JButton regresarButton;
+    public JButton agregarButton;
+    public JButton modificarButton;
+    public JButton eliminarButton;
+    public JComboBox cmbUsuarios;
+    public JComboBox cmbCanciones;
 
     public ReproduccionesVista(){
         setContentPane(contentPane);
