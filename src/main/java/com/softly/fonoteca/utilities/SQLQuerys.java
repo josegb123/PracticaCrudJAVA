@@ -3,11 +3,11 @@ package com.softly.fonoteca.utilities;
 import com.softly.fonoteca.Modelos.DTOs.ComboBoxItem;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Vector;
 
 public class SQLQuerys {
 
@@ -131,5 +131,54 @@ public class SQLQuerys {
         }
         // Opcional: Si no se encuentra, puedes dejarlo en el primer índice ("--- Seleccionar ---" si el ID es 0)
         // comboBox.setSelectedIndex(0);
+    }
+
+    /**
+     * Construye y retorna un DefaultTableModel con todos los datos de una tabla de MySQL.
+     *
+     * @param table Nombre de la tabla en la base de datos (ej: "usuarios").
+     * @param columnsAndTypes Mapa de las columnas y sus tipos de valor (String, int, date, etc.).
+     * (Actualmente se usa solo para referencia, no afecta la construcción del modelo).
+     * @return Un DefaultTableModel listo para ser usado en un JTable.
+     */
+    public static DefaultTableModel buildTableModel(String table, Map<String, String> columnsAndTypes) {
+        // La consulta es simple: seleccionar todos los registros
+        String sql = "SELECT * FROM " + table;
+
+        DefaultTableModel model = new DefaultTableModel();
+
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            // 1. Obtener Metadatos para los nombres de las columnas
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // Vector para almacenar los nombres de las columnas (encabezados)
+            Vector<String> columnNames = new Vector<>();
+            for (int i = 1; i <= columnCount; i++) {
+                // Obtenemos el nombre de la columna para usarlo como encabezado
+                columnNames.add(metaData.getColumnLabel(i));
+            }
+            model.setColumnIdentifiers(columnNames); // Asignar encabezados al modelo
+
+            // 2. Llenar las filas del modelo
+            while (rs.next()) {
+                Vector<Object> row = new Vector<>(columnCount);
+                for (int i = 1; i <= columnCount; i++) {
+                    // Obtener el valor de cada columna en la fila actual
+                    row.add(rs.getObject(i));
+                }
+                model.addRow(row);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(STR."Error al construir el modelo de tabla para '\{table}': \{e.getMessage()}");
+            // Retorna un modelo vacío en caso de error
+            return new DefaultTableModel();
+        }
+
+        return model;
     }
 }

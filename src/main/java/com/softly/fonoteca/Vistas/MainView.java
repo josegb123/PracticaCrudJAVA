@@ -10,8 +10,9 @@ public class MainView extends JFrame implements BaseView {
     public JPanel contentPane;
     public JButton usuariosButton;
     public JButton cancionesButton;
-    public JButton estadisticasButton;
+    public JButton reproduccionesButton;
     public JButton salirButton;
+    private JButton calificacionesButton;
 
     public MainView(){
         // Al usar el diseñador, estos métodos a menudo son llamados dentro del
