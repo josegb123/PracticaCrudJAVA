@@ -95,19 +95,6 @@ public class SQLQuerys {
     }
 
     /**
-     * Enum para definir los tipos de operaciones soportadas.
-     */
-    public enum OperationType {
-        INSERT,
-        UPDATE,
-        DELETE,
-        SELECT_ALL,
-        SELECT_BY_ID
-    }
-
-    // Dentro de la clase public class SQLQuerys { ... }
-
-    /**
      * Busca y establece la selección en un JComboBox cuyo modelo es de tipo ComboBoxItem,
      * basándose en el ID numérico de la clave foránea.
      *
@@ -133,12 +120,14 @@ public class SQLQuerys {
         // comboBox.setSelectedIndex(0);
     }
 
+    // Dentro de la clase public class SQLQuerys { ... }
+
     /**
      * Construye y retorna un DefaultTableModel con todos los datos de una tabla de MySQL.
      *
-     * @param table Nombre de la tabla en la base de datos (ej: "usuarios").
+     * @param table           Nombre de la tabla en la base de datos (ej: "usuarios").
      * @param columnsAndTypes Mapa de las columnas y sus tipos de valor (String, int, date, etc.).
-     * (Actualmente se usa solo para referencia, no afecta la construcción del modelo).
+     *                        (Actualmente se usa solo para referencia, no afecta la construcción del modelo).
      * @return Un DefaultTableModel listo para ser usado en un JTable.
      */
     public static DefaultTableModel buildTableModel(String table, Map<String, String> columnsAndTypes) {
@@ -146,14 +135,13 @@ public class SQLQuerys {
         String sql = "SELECT * FROM " + table;
 
         DefaultTableModel model = new DefaultTableModel();
-
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             // 1. Obtener Metadatos para los nombres de las columnas
             ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount();
+            int columnCount = metaData.getColumnCount(); // 💡 CORRECCIÓN: Leer TODAS las columnas
 
             // Vector para almacenar los nombres de las columnas (encabezados)
             Vector<String> columnNames = new Vector<>();
@@ -166,7 +154,7 @@ public class SQLQuerys {
             // 2. Llenar las filas del modelo
             while (rs.next()) {
                 Vector<Object> row = new Vector<>(columnCount);
-                for (int i = 1; i <= columnCount; i++) {
+                for (int i = 1; i <= columnCount; i++) { // 💡 CORRECCIÓN: Leer hasta columnCount
                     // Obtener el valor de cada columna en la fila actual
                     row.add(rs.getObject(i));
                 }
@@ -180,5 +168,53 @@ public class SQLQuerys {
         }
 
         return model;
+    }
+
+    /**
+     * Obtiene el valor de una columna de visualización (ej: 'nombre' o 'titulo') de una tabla
+     * a partir del valor de su clave primaria.
+     *
+     * @param table             El nombre de la tabla (ej: "usuarios", "canciones").
+     * @param idColumnName      El nombre de la columna de la clave primaria (ej: "idUsuario", "idCancion").
+     * @param idValue           El valor numérico de la clave primaria.
+     * @param displayColumnName El nombre de la columna que contiene el valor a devolver (ej: "nombres", "titulo").
+     * @return El String del valor de la columna (nombre o título), o null si no se encuentra.
+     */
+    public static String getDisplayValueById(String table, String idColumnName, int idValue, String displayColumnName) {
+        // Ejemplo de SQL generado: SELECT nombres FROM usuarios WHERE idUsuario = ?
+        String sql = "SELECT " + displayColumnName + " FROM " + table + " WHERE " + idColumnName + " = ?";
+        String result = null;
+
+        // Utilizamos la clase ConexionDB para obtener la conexión
+        try (Connection con = ConexionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // 1. Establecer el ID en el PreparedStatement
+            ps.setInt(1, idValue);
+
+            // 2. Ejecutar la consulta y procesar el resultado
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Obtener el valor por el nombre de la columna de visualización
+                    result = rs.getString(displayColumnName);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println(STR."Error al obtener \{displayColumnName} de \{table} con ID \{idValue}: \{e.getMessage()}");
+            // Nota: Aquí solo registramos el error y devolvemos null
+        }
+        return result;
+    }
+
+    /**
+     * Enum para definir los tipos de operaciones soportadas.
+     */
+    public enum OperationType {
+        INSERT,
+        UPDATE,
+        DELETE,
+        SELECT_ALL,
+        SELECT_BY_ID
     }
 }

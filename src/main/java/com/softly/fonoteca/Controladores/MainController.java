@@ -1,11 +1,14 @@
 package com.softly.fonoteca.Controladores;
 
+import com.softly.fonoteca.Modelos.DAOs.ReproduccionDAO;
 import com.softly.fonoteca.Modelos.DTOs.Cancion;
 import com.softly.fonoteca.Modelos.DAOs.CancionDAO;
+import com.softly.fonoteca.Modelos.DTOs.Reproduccion;
 import com.softly.fonoteca.Modelos.DTOs.Usuario;
 import com.softly.fonoteca.Modelos.DAOs.UsuarioDAO;
 import com.softly.fonoteca.Vistas.CancionesVista;
 import com.softly.fonoteca.Vistas.MainView;
+import com.softly.fonoteca.Vistas.ReproduccionesVista;
 import com.softly.fonoteca.Vistas.UsuariosVista;
 
 public class MainController {
@@ -20,7 +23,19 @@ public class MainController {
     private void agregarListeners() {
         this.vistaPrincipal.cancionesButton.addActionListener(e -> launchCancionModule());
         this.vistaPrincipal.usuariosButton.addActionListener(e -> launchUsuariosModule());
+        this.vistaPrincipal.reproduccionesButton.addActionListener(e->launchReproduccionesModule());
         this.vistaPrincipal.salirButton.addActionListener(e-> this.vistaPrincipal.dispose());
+    }
+
+    private void launchReproduccionesModule() {
+        this.vistaPrincipal.setVisible(false);
+
+        Reproduccion modeloReproduccion = new Reproduccion();
+        ReproduccionDAO consultasReproduccion = new ReproduccionDAO();
+        ReproduccionesVista vistaReproduccion = new ReproduccionesVista();
+
+        ReproduccionesController reproduccionController = new ReproduccionesController(modeloReproduccion, vistaReproduccion,consultasReproduccion ,this.vistaPrincipal);
+        reproduccionController.iniciar();
     }
 
     private void launchCancionModule() {
