@@ -216,4 +216,12 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
         vista.btnLimpiar.addActionListener(e -> clearViewFields());
         vista.regresarAlMenuButton.addActionListener(e -> regresarAlMenu());
     }
+
+    @Override
+    public void iniciar() {
+        this.vista.pack();
+        this.vista.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.vista.setVisible(true);
+        this.vista.setLocationRelativeTo(null);
+    }
 }

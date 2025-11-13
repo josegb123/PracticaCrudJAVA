@@ -1,13 +1,11 @@
 package com.softly.fonoteca.utilities;
 
 import com.softly.fonoteca.Modelos.DTOs.ComboBoxItem;
-import javax.swing.JComboBox;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.JOptionPane;
 
 // Asumo la existencia de la clase SQLQuerys y BaseView (aunque BaseView no se usa aquí)
 
@@ -78,6 +76,8 @@ public class TablaUtils {
                 // Determinar el tipo de componente y cargar el valor
                 if (component instanceof JTextField) {
                     ((JTextField) component).setText(rawValue != null ? rawValue.toString() : "");
+                }else if(component instanceof JTextArea) {
+                    ((JTextArea) component).setText(rawValue != null ? rawValue.toString() : "");
                 } else if (component instanceof JComboBox) {
                     // Se requiere el cast para manejar el JComboBox con ComboBoxItem
                     @SuppressWarnings("unchecked")

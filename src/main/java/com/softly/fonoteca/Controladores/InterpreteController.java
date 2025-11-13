@@ -9,15 +9,22 @@ import com.softly.fonoteca.utilities.FormatDates;
 import com.softly.fonoteca.utilities.SQLQuerys;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Controlador principal para la gestión de Intérpretes (Interprete).
+ * Implementa el patrón Singleton para asegurar una única instancia del controlador.
+ */
 public class InterpreteController extends BaseController<Interprete, InterpretesVista, InterpreteDAO> {
 
-    // 🌟 1. DEFINICIÓN DE COLUMNAS A MOSTRAR 🌟
-    // Columnas de la BD que queremos obtener
+    // Campo estático para mantener la única instancia
+    private static InterpreteController instance;
+
+    // 🌟 DEFINICIÓN DE COLUMNAS A MOSTRAR 🌟
     private static final String[] DB_COLUMNS_TO_SHOW =
             {"nombre", "tituloInterprete", "yearLanzamiento"};
 
@@ -25,48 +32,88 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
             {"Nombre", "Título de interprete", "Año de lanzamiento"};
 
 
-    public InterpreteController(Interprete modelo, InterpretesVista vista, InterpreteDAO consultas, BaseView vistaPrincipal) {
+    /**
+     * Constructor privado para la implementación del patrón Singleton.
+     * @param modelo Instancia del DTO Interprete.
+     * @param vista Instancia de la vista InterpretesVista.
+     * @param consultas Instancia del DAO InterpreteDAO.
+     * @param vistaPrincipal Vista padre (BaseView) para manejo de navegación.
+     */
+    private InterpreteController(Interprete modelo, InterpretesVista vista, InterpreteDAO consultas, BaseView vistaPrincipal) {
         super(modelo, vista, consultas, vistaPrincipal);
 
-        // 2. Inicializar la tabla principal
+        // 1. Inicializar la tabla principal
         this.mainTable = vista.tablaInterpretes;
 
-        // Cargar datos al inicio
+        // 2. Cargar datos de ComboBox y tabla
+        vista.cmbGenero.setModel(SQLQuerys.consultarDatos("generos", "idGenero", "nombre"));
         cargarTablaInterpretes();
 
-        vista.cmbGenero.setModel(SQLQuerys.consultarDatos("generos", "idGenero", "nombre"));
-        // Agregar listeners, incluyendo el de la tabla
+        // 3. Agregar listeners y iniciar
         agregarListeners();
+        iniciar();
     }
 
     /**
-     * Usa la implementación genérica del BaseController para cargar y filtrar la tabla.
+     * Método estático de acceso para obtener la única instancia (Singleton).
+     * Si la instancia no existe, la crea; si ya existe, devuelve la existente y la hace visible.
+     * @param modelo DTO de Intérprete.
+     * @param vista Vista de Intérprete.
+     * @param consultas DAO de Intérprete.
+     * @param vistaPrincipal Vista desde donde se llama.
+     * @return La única instancia de InterpreteController.
+     */
+    public static InterpreteController getInstance(Interprete modelo, InterpretesVista vista, InterpreteDAO consultas, BaseView vistaPrincipal) {
+        if (instance == null) {
+            instance = new InterpreteController(modelo, vista, consultas, vistaPrincipal);
+        }
+
+        // Si la instancia ya existe, la hacemos visible si está oculta.
+        if (!instance.vista.isVisible()) {
+            instance.vista.setVisible(true);
+        }
+
+        // Actualizamos la vista principal por si cambiamos el flujo de navegación
+        instance.vistaPrincipal = vistaPrincipal;
+
+        return instance;
+    }
+
+    /**
+     * Carga la tabla de intérpretes usando el método genérico del BaseController.
      */
     private void cargarTablaInterpretes() {
         cargarTabla("interpretes", DB_COLUMNS_TO_SHOW, DISPLAY_COLUMNS_HEADERS);
     }
 
 
+    /**
+     * Obtiene el ID del DTO actual (modelo) para operaciones CRUD (modificar/eliminar).
+     * @return El ID del intérprete.
+     */
     @Override
     protected int getModelId() {
-        // Obtenemos el ID del modelo cargado al seleccionar la fila
         return modelo.getIdInterprete();
     }
 
+    /**
+     * Recolecta los datos de los campos de la vista y los asigna al DTO (modelo).
+     * @return true si la recolección fue exitosa; false en caso contrario.
+     */
     @Override
     protected boolean collectDataFromView() {
         try {
             LocalDate fechaLanzamiento = FormatDates.getFormatDate(vista.txtYearLanzamiento.getText());
             LocalDate fechaRetiro = FormatDates.getFormatDate(vista.txtYearRetiro.getText());
 
-            // Si es una modificación, el ID ya está en el modelo. Si es registro, el ID es 0.
+            // Asignación de ID (0 si es nuevo registro)
             if (!vista.txtID.getText().isEmpty()) {
                 modelo.setIdInterprete(Integer.parseInt(vista.txtID.getText()));
             } else {
                 modelo.setIdInterprete(0);
             }
 
-            modelo.setNombre(vista.txtNombre.getText()); // Corregido: usa txtNombre para nombre
+            modelo.setNombre(vista.txtNombre.getText());
             modelo.setYearLanzamiento(fechaLanzamiento);
             modelo.setYearRetiro(fechaRetiro);
             modelo.setTituloInterprete(vista.txtTitulo.getText());
@@ -82,10 +129,13 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
         }
     }
 
+    /**
+     * Carga los datos de un DTO de intérprete encontrado a los campos de la vista.
+     * @param interpreteEncontrado DTO con los datos obtenidos de la BD.
+     */
     @Override
     protected void loadDataToView(Interprete interpreteEncontrado) {
-        // Este método se usa si buscarRegistroPorId(id) fuera invocado, pero ahora usamos el listener de tabla.
-
+        // A. Sincronizar el modelo
         this.modelo.setIdInterprete(interpreteEncontrado.getIdInterprete());
         this.modelo.setTituloInterprete(interpreteEncontrado.getTituloInterprete());
         this.modelo.setYearLanzamiento(interpreteEncontrado.getYearLanzamiento());
@@ -93,18 +143,22 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
         this.modelo.setIdGeneroPrincipal(interpreteEncontrado.getIdGeneroPrincipal());
         this.modelo.setNombre(interpreteEncontrado.getNombre());
 
+        // B. Mostrar en la vista
         vista.txtTitulo.setText(interpreteEncontrado.getTituloInterprete());
         vista.txtNombre.setText(interpreteEncontrado.getNombre());
         vista.txtID.setText(String.valueOf(interpreteEncontrado.getIdInterprete()));
-        vista.txtYearLanzamiento.setText(interpreteEncontrado.getYearLanzamiento().toString());
-        vista.txtYearRetiro.setText(interpreteEncontrado.getYearRetiro().toString());
+        vista.txtYearLanzamiento.setText(interpreteEncontrado.getYearLanzamiento() != null ? interpreteEncontrado.getYearLanzamiento().toString() : "");
+        vista.txtYearRetiro.setText(interpreteEncontrado.getYearRetiro() != null ? interpreteEncontrado.getYearRetiro().toString() : "");
 
         SQLQuerys.setSelectedItemById(vista.cmbGenero, interpreteEncontrado.getIdGeneroPrincipal());
     }
 
+    /**
+     * Limpia todos los campos de entrada y ComboBox de la vista.
+     */
     @Override
     protected void clearViewFields() {
-        modelo.setIdInterprete(0); // Limpiar el ID del modelo
+        modelo.setIdInterprete(0);
         vista.txtID.setText("");
         vista.txtNombre.setText("");
         vista.txtTitulo.setText("");
@@ -116,57 +170,47 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
     }
 
     /**
-     * Implementa la lógica de selección de fila usando el método genérico del BaseController.
+     * Implementa la lógica de selección de fila para cargar los campos,
+     * incluyendo el manejo de fechas NULAS.
      */
-    private void cargarDetalleFilaSeleccionada(javax.swing.event.ListSelectionEvent e) {
+    private void cargarDetalleFilaSeleccionada(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting() && vista.tablaInterpretes.getSelectedRow() != -1 && this.rawModel != null) {
 
             int selectedRow = vista.tablaInterpretes.getSelectedRow();
 
-            // 1. Mapeo de componentes simples (para loadTableDetailsToView)
+            // 1. Mapeo de componentes simples
             Map<String, Object> componentMappings = new HashMap<>();
-
             componentMappings.put("nombre", vista.txtNombre);
             componentMappings.put("tituloInterprete", vista.txtTitulo);
-            componentMappings.put("yearLanzamiento", vista.txtYearLanzamiento);
-            componentMappings.put("yearRetiro", vista.txtYearRetiro);
+            componentMappings.put("idGeneroPrincipal", vista.cmbGenero); // ComboBox
 
-            // Mapeamos el JComboBox con el ID foráneo del rawModel
-            componentMappings.put("idGeneroPrincipal", vista.cmbGenero);
-
-            // Usamos el método genérico para cargar los campos simples y el ComboBox
             loadTableDetailsToView(e, componentMappings);
 
             try {
                 // 2. Manejo de campos especiales (ID y Fechas NULAS)
 
-                // Obtener ID (necesario para CRUD y mostrar en txtID)
+                // Obtener ID
                 int col_id = rawModel.findColumn("idInterprete");
                 int idInterprete = (int) rawModel.getValueAt(selectedRow, col_id);
                 modelo.setIdInterprete(idInterprete);
                 vista.txtID.setText(String.valueOf(idInterprete));
 
-                // Cargar Fechas al modelo (Manejo de NULOS)
+                // Cargar Fechas al modelo y vista (Manejo de NULOS)
                 int col_fechaL = rawModel.findColumn("yearLanzamiento");
                 int col_fechaR = rawModel.findColumn("yearRetiro");
 
                 Object rawFechaL = rawModel.getValueAt(selectedRow, col_fechaL);
                 Object rawFechaR = rawModel.getValueAt(selectedRow, col_fechaR);
 
-                // Inicializar fechas locales
                 LocalDate fechaLanzamiento = null;
                 LocalDate fechaRetiro = null;
 
-                // Procesar Fecha de Lanzamiento
-                if (rawFechaL != null) {
-                    // Cortamos la cadena para asegurar el formato YYYY-MM-DD
+                if (rawFechaL != null && !rawFechaL.toString().isEmpty()) {
                     String fechaLanzamientoStr = rawFechaL.toString().substring(0, 10);
                     fechaLanzamiento = LocalDate.parse(fechaLanzamientoStr);
                 }
 
-                // Procesar Fecha de Retiro
-                if (rawFechaR != null) {
-                    // Cortamos la cadena para asegurar el formato YYYY-MM-DD
+                if (rawFechaR != null && !rawFechaR.toString().isEmpty()) {
                     String fechaRetiroStr = rawFechaR.toString().substring(0, 10);
                     fechaRetiro = LocalDate.parse(fechaRetiroStr);
                 }
@@ -179,10 +223,7 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
                 vista.txtYearLanzamiento.setText(fechaLanzamiento != null ? fechaLanzamiento.toString() : "");
                 vista.txtYearRetiro.setText(fechaRetiro != null ? fechaRetiro.toString() : "");
 
-                // NOTA: El JComboBox (idGeneroPrincipal) ya se cargó gracias a loadTableDetailsToView
-
             } catch (Exception ex) {
-                // Si hay un error, el log mostrará el problema, pero el usuario verá un mensaje más amigable.
                 JOptionPane.showMessageDialog(vista, "Error al cargar datos de fecha/ID: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 System.err.println("❌ ERROR al cargar detalles de la fila: " + ex.getMessage());
             }
@@ -190,6 +231,9 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
     }
 
 
+    /**
+     * Define y agrega los Listeners a todos los componentes de la vista.
+     */
     @Override
     protected void agregarListeners() {
         // Listener de la tabla para cargar datos
@@ -209,7 +253,20 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
             cargarTablaInterpretes();
         });
 
+        // Listeners Funcionales
         vista.regresarButton.addActionListener(_ -> regresarAlMenu());
         vista.limpiarCamposButton.addActionListener(_ -> clearViewFields());
+    }
+
+    /**
+     * Hace visible la vista del controlador.
+     * Configura el comportamiento de cierre para solo ocultar la ventana (JFrame.HIDE_ON_CLOSE).
+     */
+    @Override
+    public void iniciar() {
+        this.vista.pack();
+        this.vista.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        this.vista.setVisible(true);
+        this.vista.setLocationRelativeTo(null);
     }
 }

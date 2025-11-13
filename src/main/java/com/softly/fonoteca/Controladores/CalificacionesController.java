@@ -335,5 +335,6 @@ public class CalificacionesController {
         this.vista.pack();
         this.vista.setDefaultCloseOperation(CalificacionesVista.EXIT_ON_CLOSE);
         this.vista.setVisible(true);
+        this.vista.setLocationRelativeTo(null);
     }
 }

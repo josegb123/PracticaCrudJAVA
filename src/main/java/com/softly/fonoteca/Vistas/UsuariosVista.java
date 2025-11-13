@@ -26,8 +26,6 @@ public class UsuariosVista extends JFrame implements CRUDView {
 
     public UsuariosVista(){
         super.setContentPane(contentPane);
-        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.pack();
     }
 
 

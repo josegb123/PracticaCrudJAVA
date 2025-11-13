@@ -25,9 +25,6 @@ public class AlbumVista extends JFrame implements CRUDView {
 
     public AlbumVista(){
         super.setContentPane(contentPane);
-        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.pack();
-        super.setLocationRelativeTo(null);
     }
 
 

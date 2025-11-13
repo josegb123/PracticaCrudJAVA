@@ -267,5 +267,6 @@ public class ReproduccionesController {
         this.vista.pack();
         this.vista.setDefaultCloseOperation(ReproduccionesVista.EXIT_ON_CLOSE);
         this.vista.setVisible(true);
+        this.vista.setLocationRelativeTo(null);
     }
 }

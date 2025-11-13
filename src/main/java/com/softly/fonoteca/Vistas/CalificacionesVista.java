@@ -18,9 +18,6 @@ public class CalificacionesVista extends JFrame {
 
     public CalificacionesVista() {
         setContentPane(contentPane);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack();
-        setLocationRelativeTo(null);
     }
 
 

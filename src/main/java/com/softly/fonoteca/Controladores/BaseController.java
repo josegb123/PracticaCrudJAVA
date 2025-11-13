@@ -25,7 +25,7 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
     protected final T modelo;
     protected final V vista;
     protected final D consultas;
-    protected final BaseView vistaPrincipal;
+    protected BaseView vistaPrincipal;
 
     // 🌟 NUEVO: Variable para almacenar el modelo de datos crudo de la tabla
     protected DefaultTableModel rawModel;
@@ -254,9 +254,5 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
         this.vistaPrincipal.setVisible(true);
     }
 
-    public void iniciar() {
-        this.vista.pack();
-        this.vista.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.vista.setVisible(true);
-    }
+    abstract public void iniciar();
 }

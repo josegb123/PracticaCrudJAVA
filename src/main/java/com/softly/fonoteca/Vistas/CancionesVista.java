@@ -24,13 +24,11 @@ public class CancionesVista extends JFrame implements CRUDView{
     public JButton administarAlbumnesButton;
     public JButton administrarGenerosButton;
     public JButton administrarInterpretesButton;
+    public JTable tablaCanciones;
 
 
     public CancionesVista(){
         super.setContentPane(contentPane);
-        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.pack();
-        super.setLocationRelativeTo(null);
     }
 
     @Override

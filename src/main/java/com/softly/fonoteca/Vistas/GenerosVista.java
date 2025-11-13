@@ -1,6 +1,7 @@
 package com.softly.fonoteca.Vistas;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class GenerosVista extends JFrame implements CRUDView{
     public JPanel contentPane;
@@ -14,12 +15,12 @@ public class GenerosVista extends JFrame implements CRUDView{
     public JButton limpiarCamposButton;
     public JButton buscarButton;
     public JButton regresarButton;
+    public JTable tablaGeneros;
 
     public GenerosVista(){
         super.setContentPane(contentPane);
-        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.pack();
-        super.setLocationRelativeTo(null);
+        Color colorDelTema = UIManager.getColor("MenuBar.borderColor");
+        txtDescripcion.setBorder(BorderFactory.createLineBorder(colorDelTema, 1));
     }
 
     @Override

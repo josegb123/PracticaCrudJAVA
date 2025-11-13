@@ -23,10 +23,6 @@ public class ReproduccionesVista extends JFrame implements CRUDView{
 
     public ReproduccionesVista(){
         setContentPane(contentPane);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pack();
-        setLocationRelativeTo(null);
-
     }
 
 

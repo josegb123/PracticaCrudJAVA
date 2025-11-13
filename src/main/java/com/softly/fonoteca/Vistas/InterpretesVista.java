@@ -21,9 +21,6 @@ public class InterpretesVista extends JFrame implements CRUDView{
 
     public InterpretesVista(){
         super.setContentPane(contentPane);
-        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        super.pack();
-        super.setLocationRelativeTo(null);
     }
 
     @Override
