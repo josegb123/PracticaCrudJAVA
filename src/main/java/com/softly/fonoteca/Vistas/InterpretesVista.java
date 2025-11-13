@@ -17,6 +17,7 @@ public class InterpretesVista extends JFrame implements CRUDView{
     public JButton eliminarButton;
     public JButton limpiarCamposButton;
     public JButton regresarButton;
+    public JTable tablaInterpretes;
 
     public InterpretesVista(){
         super.setContentPane(contentPane);

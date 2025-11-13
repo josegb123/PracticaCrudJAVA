@@ -21,6 +21,7 @@ public class UsuariosVista extends JFrame implements CRUDView {
     public JButton btnLimpiar;
     public JTextField txtEmail;
     public JButton regresarAlMenuButton;
+    public JTable tablaUsuarios;
 
 
     public UsuariosVista(){

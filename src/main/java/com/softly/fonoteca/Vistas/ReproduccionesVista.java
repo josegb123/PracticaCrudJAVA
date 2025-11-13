@@ -7,7 +7,7 @@ import com.github.lgooddatepicker.optionalusertools.PickerUtilities;
 import javax.swing.*;
 import java.time.LocalTime;
 
-public class ReproduccionesVista extends JFrame {
+public class ReproduccionesVista extends JFrame implements CRUDView{
     public JTable tablaReproducciones;
     public JTextField txtSegundosReproduccidos;
     public JPanel contentPane;
@@ -39,5 +39,40 @@ public class ReproduccionesVista extends JFrame {
         timeSettings.initialTime = LocalTime.of(15, 00, 00);
         timeSettings.setSizeTextFieldMinimumWidth(180);
         txtHoraReproduccion = new TimePicker(timeSettings);
+    }
+
+    @Override
+    public JButton getBtnAgregar() {
+        return null;
+    }
+
+    @Override
+    public JButton getBtnModificar() {
+        return null;
+    }
+
+    @Override
+    public JButton getBtnEliminar() {
+        return null;
+    }
+
+    @Override
+    public JButton getBuscarButton() {
+        return null;
+    }
+
+    @Override
+    public JButton getBtnRegresarMenu() {
+        return null;
+    }
+
+    @Override
+    public JButton getBtnLimpiar() {
+        return null;
+    }
+
+    @Override
+    public String getSearchText() {
+        return "";
     }
 }
