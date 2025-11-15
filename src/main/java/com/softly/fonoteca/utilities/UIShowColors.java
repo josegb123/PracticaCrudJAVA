@@ -7,14 +7,12 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collections; // 🌟 Nuevo: Para ordenar
-import java.util.Comparator; // 🌟 Nuevo: Para ordenar
 import java.util.Enumeration;
 import java.util.Vector;
 
 public class UIShowColors extends JFrame {
 
-    private JTable colorTable; // Hacemos la tabla accesible para el listener
+    private final JTable colorTable; // Hacemos la tabla accesible para el listener
 
     public UIShowColors() {
         setTitle("Colores del UIManager (L&F Actual: " + UIManager.getLookAndFeel().getName() + ")");
@@ -57,6 +55,17 @@ public class UIShowColors extends JFrame {
      * Obtiene todas las keys de color del UIManager y las ordena alfabéticamente.
      */
     private Vector<Vector<Object>> getColorData() {
+        Vector<Vector<Object>> data = getVectors();
+
+        data.sort((row1, row2) -> {
+            // Compara la clave (Object en el índice 0)
+            return ((String) row1.get(0)).compareTo((String) row2.get(0));
+        });
+
+        return data;
+    }
+
+    private static Vector<Vector<Object>> getVectors() {
         UIDefaults defaults = UIManager.getDefaults();
         Enumeration<Object> keys = defaults.keys();
         Vector<Vector<Object>> data = new Vector<>();
@@ -72,16 +81,6 @@ public class UIShowColors extends JFrame {
                 data.add(row);
             }
         }
-
-        // 🌟 ORDENAR ALFABÉTICAMENTE: Ordenamos por la primera columna (la Key)
-        Collections.sort(data, new Comparator<Vector<Object>>() {
-            @Override
-            public int compare(Vector<Object> row1, Vector<Object> row2) {
-                // Compara la clave (Object en el índice 0)
-                return ((String) row1.get(0)).compareTo((String) row2.get(0));
-            }
-        });
-
         return data;
     }
 
@@ -143,7 +142,7 @@ public class UIShowColors extends JFrame {
     /**
      * Renderer de tabla personalizado para dibujar un cuadrado de color.
      */
-    private class ColorRenderer extends JLabel implements TableCellRenderer {
+    private static class ColorRenderer extends JLabel implements TableCellRenderer {
 
         public ColorRenderer() {
             setOpaque(true);
@@ -170,7 +169,4 @@ public class UIShowColors extends JFrame {
         }
     }
 
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(UIShowColors::new);
-//    }
 }

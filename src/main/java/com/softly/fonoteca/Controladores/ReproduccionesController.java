@@ -54,8 +54,8 @@ public class ReproduccionesController {
             DefaultTableModel finalModel = convertirIDsANombres(this.rawModel);
             vista.tablaReproducciones.setModel(finalModel);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(vista, STR."Error al cargar la tabla de reproducciones: \{e.getMessage()}", "Error de BD", JOptionPane.ERROR_MESSAGE);
-            System.err.println(STR."❌ ERROR FATAL en cargarTablaReproducciones: \{e.getMessage()}");
+            JOptionPane.showMessageDialog(vista, "Error al cargar la tabla de reproducciones: " + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+            System.err.println("❌ ERROR FATAL en cargarTablaReproducciones: " + e.getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class ReproduccionesController {
 
                 newModel.addRow(newRow);
             } catch (ClassCastException e) {
-                System.err.println(STR."❌ ERROR: Fallo de conversión de tipos en la fila \{i}. Asegúrese que los IDs son INT.");
+                System.err.println("❌ ERROR: Fallo de conversión de tipos en la fila " + i + " Asegúrese que los IDs son INT.");
             }
         }
         return newModel;
@@ -187,16 +187,14 @@ public class ReproduccionesController {
             String segundosStr = vista.txtSegundosReproduccidos.getText().replaceAll("[^0-9]", "").trim();
             int segundos = Integer.parseInt(segundosStr);
 
-            // 🌟 SIMPLIFICACIÓN: Usar los métodos getDate() y getTime() directamente
-            // La librería garantiza que si llegamos aquí y pasa validarCampos(), los valores no son null.
             modelo.setFechaReproduccion(vista.txtFechaReproduccion.getDate());
             modelo.setHoraReproduccion(vista.txtHoraReproduccion.getTime());
             modelo.setSegundosReproducidos(segundos);
 
             return true;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(vista, STR."Error al mapear datos: \{e.getMessage()}", "Error de Datos", JOptionPane.ERROR_MESSAGE);
-            System.err.println(STR."❌ ERROR al mapear vista a modelo: \{e.getMessage()}");
+            JOptionPane.showMessageDialog(vista, "Error al mapear datos: " + e.getMessage(), "Error de Datos", JOptionPane.ERROR_MESSAGE);
+            System.err.println("❌ ERROR al mapear vista a modelo: " + e.getMessage());
             return false;
         }
     }
@@ -243,15 +241,13 @@ public class ReproduccionesController {
                 SQLQuerys.setSelectedItemById(vista.cmbUsuarios, idUsuario);
                 SQLQuerys.setSelectedItemById(vista.cmbCanciones, idCancion);
 
-                // 🌟 SIMPLIFICACIÓN: Usar los métodos setDate() y setTime() directamente en los componentes
                 vista.txtFechaReproduccion.setDate(LocalDate.parse(fechaStr));
                 vista.txtHoraReproduccion.setTime(LocalTime.parse(horaStr));
-
                 vista.txtSegundosReproduccidos.setText(String.valueOf(segundos));
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(vista, STR."Error al cargar detalles de la fila: \{e.getMessage()}", "Error", JOptionPane.ERROR_MESSAGE);
-                System.err.println(STR."❌ ERROR en cargarDetalleFilaSeleccionada: \{e.getMessage()}");
+                JOptionPane.showMessageDialog(vista, "Error al cargar detalles de la fila: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                System.err.println("❌ ERROR en cargarDetalleFilaSeleccionada: " + e.getMessage());
             }
         }
     }

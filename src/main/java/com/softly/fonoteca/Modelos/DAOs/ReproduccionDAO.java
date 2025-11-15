@@ -39,9 +39,8 @@ public class ReproduccionDAO extends BaseDAO<Reproduccion> {
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            // ERROR: 1062 - Clave primaria duplicada (se asume clave compuesta: idUsuario, idCancion)
+            // ERROR: 1062 - Clave primaria duplicada (idUsuario, idCancion)
             if (e.getErrorCode() == 1062) {
-                System.out.println("DEBUG: El registro ya existe, intentando modificar...");
                 return modificar(reproduccion); // Llama al método de actualización
             }
             System.err.println("❌ Error al vincular Cancion y usuario en reproducciones: " + e.getMessage());
@@ -119,7 +118,6 @@ public class ReproduccionDAO extends BaseDAO<Reproduccion> {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    // Mapeamos el resultado en el DTO recibido o en uno nuevo si lo prefieres
                     return mapFromResultSet(rs);
                 }
             }
@@ -140,7 +138,7 @@ public class ReproduccionDAO extends BaseDAO<Reproduccion> {
     }
 
     /**
-     * ⚠️ NO APLICABLE: Retorna vacío ya que esta tabla usa una clave compuesta,
+     * NO APLICABLE: Retorna vacío ya que esta tabla usa una clave compuesta,
      * y los métodos de BaseDAO están optimizados para claves primarias simples (INT).
      */
     @Override
@@ -154,7 +152,7 @@ public class ReproduccionDAO extends BaseDAO<Reproduccion> {
     }
 
     /**
-     * ⚠️ NO APLICABLE: Retorna 0 ya que esta tabla usa una clave compuesta,
+     * NO APLICABLE: Retorna 0 ya que esta tabla usa una clave compuesta,
      * y no tiene una clave primaria INT simple.
      */
     @Override
@@ -163,12 +161,11 @@ public class ReproduccionDAO extends BaseDAO<Reproduccion> {
     }
 
     /**
-     * ⚠️ NO APLICABLE: Este DAO usa métodos específicos (vincular, modificar)
+     * NO APLICABLE: Este DAO usa métodos específicos (vincular, modificar)
      * para manejar la clave compuesta.
      */
     @Override
-    protected void mapToStatement(PreparedStatement ps, Reproduccion dto) throws SQLException {
-        // No se implementa, ya que las consultas (INSERT, UPDATE) usan lógica específica en este DAO.
+    protected void mapToStatement(PreparedStatement ps, Reproduccion dto) {
     }
 
     /**

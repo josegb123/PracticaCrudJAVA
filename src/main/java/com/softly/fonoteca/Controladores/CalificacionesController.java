@@ -40,7 +40,6 @@ public class CalificacionesController {
 
         cargarTablaCalificaciones();
 
-        // Inicializar ComboBoxes con datos (asumiendo nombres de componentes en la vista)
         vista.cmbCanciones.setModel(SQLQuerys.consultarDatos("canciones", "idCancion", "titulo"));
         vista.cmbUsuarios.setModel(SQLQuerys.consultarDatos("usuarios", "idUsuario", "nombres"));
 
@@ -58,7 +57,6 @@ public class CalificacionesController {
     private void cargarTablaCalificaciones() {
         try {
             // 1. Obtener el modelo crudo con los IDs originales de la BD.
-            // Nota: El HashMap vacío indica que no se requiere mapeo de nombres de columna aquí.
             this.rawModel = SQLQuerys.buildTableModel("calificaciones", new HashMap<>());
 
             // 2. Convertir IDs a nombres para el modelo de la vista.
@@ -188,10 +186,6 @@ public class CalificacionesController {
      */
     private boolean validarCampos() {
         try {
-            // Validación de Calificación (asumiendo que es un número o un ComboBox)
-            // Si es un campo de texto simple:
-            // Integer.parseInt(vista.txtCalificacion.getText().trim());
-
             // Validación de Fecha y Hora
             LocalDate.parse(vista.txtFechaCalificacion.getText());
             LocalTime.parse(vista.txtHoraCalificacion.getText());
@@ -265,12 +259,12 @@ public class CalificacionesController {
         vista.tablaCalificaciones.getSelectionModel().addListSelectionListener(this::handleTableSelection);
 
         // Listeners de botones CRUD
-        vista.agregarButton.addActionListener(e -> agregarCalificacion());
-        vista.modificarButton.addActionListener(e -> modificarCalificacion());
-        vista.eliminarButton.addActionListener(e -> eliminarCalificacion());
+        vista.agregarButton.addActionListener(_-> agregarCalificacion());
+        vista.modificarButton.addActionListener(_-> modificarCalificacion());
+        vista.eliminarButton.addActionListener(_-> eliminarCalificacion());
 
         // Listener para el botón de regresar.
-        vista.regresarButton.addActionListener(e -> cerrarVista());
+        vista.regresarButton.addActionListener(_-> cerrarVista());
     }
 
     /**

@@ -24,7 +24,6 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
     // Campo estático para mantener la única instancia
     private static InterpreteController instance;
 
-    // 🌟 DEFINICIÓN DE COLUMNAS A MOSTRAR 🌟
     private static final String[] DB_COLUMNS_TO_SHOW =
             {"nombre", "tituloInterprete", "yearLanzamiento"};
 
@@ -123,8 +122,8 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
 
             return true;
         } catch (Exception e) {
-            System.err.println(STR."Error al recolectar datos: \{e.getMessage()}");
-            JOptionPane.showMessageDialog(vista, STR."Error interno de formato de datos: \{e.getMessage()}", "Error Crítico", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al recolectar datos: " + e.getMessage());
+            JOptionPane.showMessageDialog(vista, "Error interno de formato de datos: " + e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }

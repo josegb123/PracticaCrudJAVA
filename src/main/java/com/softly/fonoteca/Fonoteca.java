@@ -7,7 +7,7 @@ import com.softly.fonoteca.Vistas.LoginVista;
 
 public class Fonoteca {
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
 
         LoginController controller = new LoginController(new LoginVista(),new UsuarioDAO());
         controller.iniciar();

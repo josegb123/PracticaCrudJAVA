@@ -1,8 +1,8 @@
 package com.softly.fonoteca.Modelos.DAOs;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.softly.fonoteca.Modelos.DTOs.Usuario;
 import com.softly.fonoteca.utilities.ConexionDB;
-import at.favre.lib.crypto.bcrypt.BCrypt; // Importar la librería BCrypt
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,26 +43,20 @@ public class UsuarioDAO extends BaseDAO<Usuario> {
      */
     @Override
     protected void mapToStatement(PreparedStatement ps, Usuario usuario) throws SQLException {
-        // Asumimos que el DTO tiene un método que retorna la contraseña en texto plano
-        // O el hash si ya fue procesado en la capa de servicio.
         String passwordValue = usuario.getHashedPassword();
         String finalHash;
 
         // 1. Detección y Hashing de Contraseña
         if (passwordValue != null && passwordValue.length() < 60 && !passwordValue.startsWith("$2")) {
-            // Si la longitud es corta Y no comienza con un prefijo BCrypt ($2a$, $2b$, $2y$),
-            // asumimos que es una contraseña en texto plano que necesita ser hasheada.
 
             // Usamos el método de BCrypt para hashear
             finalHash = BCrypt.withDefaults().hashToString(BCRYPT_COST, passwordValue.toCharArray());
-            System.out.println("DEBUG DAO: Contraseña hasheada (BCrypt) antes de DB: " + finalHash);
         } else {
             // Es un hash existente (viene de la DB o ya fue hasheado) o es nulo.
             finalHash = passwordValue;
         }
 
         ps.setString(1, usuario.getEmail());
-        // Usamos el hash final (nuevo hash o hash existente)
         ps.setString(2, finalHash);
         ps.setString(3, usuario.getNombres());
         ps.setString(4, usuario.getApellidos());
@@ -101,12 +95,12 @@ public class UsuarioDAO extends BaseDAO<Usuario> {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, email);
-            System.out.println("DEBUG DAO: Buscando usuario por email: " + email);
+
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Usuario usuario = mapFromResultSet(rs);
-                    System.out.println("DEBUG DAO: Usuario encontrado y mapeado.");
+
                     return usuario;
                 }
                 return null;
@@ -114,7 +108,7 @@ public class UsuarioDAO extends BaseDAO<Usuario> {
 
         } catch (SQLException e) {
             System.err.println("Error critico en la busqueda de usuario por email: " + e.getLocalizedMessage());
-            e.printStackTrace();
+
             return null;
         }
     }

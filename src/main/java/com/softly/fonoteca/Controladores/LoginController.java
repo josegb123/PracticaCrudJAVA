@@ -47,11 +47,11 @@ public class LoginController {
     // --------------------------------------------------------------------
 
 
-    protected void iniciarSesion() throws Exception {
+    protected void iniciarSesion() {
         String email = vista.getTxtEmail().getText();
         char[] passwdChars = vista.getTxtPasswd().getPassword(); // Contraseña como char[]
 
-        Usuario usuarioAutenticado = null;
+        Usuario usuarioAutenticado;
 
         try {
             // Se llama a verificarSesion directamente con el char[]

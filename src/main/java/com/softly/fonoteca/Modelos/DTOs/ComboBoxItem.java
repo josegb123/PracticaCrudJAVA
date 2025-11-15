@@ -1,8 +1,8 @@
 package com.softly.fonoteca.Modelos.DTOs;
 
 public class ComboBoxItem {
-    private int id;
-    private String displayValue;
+    private final int id;
+    private final String displayValue;
 
     public ComboBoxItem(int id, String displayValue) {
         this.id = id;

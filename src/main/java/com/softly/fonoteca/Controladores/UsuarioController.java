@@ -12,11 +12,11 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.time.LocalDateTime; // Importación necesaria para el mapeo de fechaRegistro
+// Importación necesaria para el mapeo de fechaRegistro
+
 
 public class UsuarioController extends BaseController<Usuario, UsuariosVista, UsuarioDAO> {
 
-    // 🌟 1. DEFINICIÓN DE COLUMNAS A MOSTRAR 🌟
     private static final String[] DB_COLUMNS_TO_SHOW =
             {"idUsuario", "email", "nombres", "paisNacimiento"};
 
@@ -94,8 +94,8 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
             return true;
 
         } catch (Exception e) {
-            System.err.println(STR."Error de formato de fecha o datos: \{e.getMessage()}");
-            JOptionPane.showMessageDialog(vista, STR."Error al procesar datos: \{e.getMessage()}", "Error Crítico", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error de formato de fecha o datos: " + e.getMessage());
+            JOptionPane.showMessageDialog(vista, "Error al procesar datos: " + e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
             return false;
         } finally {
             // --- BORRADO SEGURO DE MEMORIA ---
@@ -191,12 +191,8 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
                 LocalDate fechaNacimiento = LocalDate.parse(fechaNacStr);
                 LocalDate fechaRegistroLocal = LocalDate.parse(fechaRegStr);
 
-                // Mostrar en la vista (asumiendo que tienes txtFechaR)
                 vista.txtFechaN.setText(fechaNacimiento.toString());
-                // Asumiendo que existe un campo para fechaRegistro en la vista
-                // vista.txtFechaR.setText(fechaRegistroLocal.toString());
 
-                // Cargar al modelo (LocalDateTime requerido para fechaRegistro)
                 modelo.setFechaNacimiento(fechaNacimiento);
                 modelo.setFechaRegistro(fechaRegistroLocal.atStartOfDay());
 
@@ -214,20 +210,20 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
         vista.tablaUsuarios.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD
-        vista.btnAgregar.addActionListener(e -> {
+        vista.btnAgregar.addActionListener(_-> {
             registrar();
             cargarTablaUsuarios(); // Refrescar la tabla después del CRUD
         });
-        vista.btnModificar.addActionListener(e -> {
+        vista.btnModificar.addActionListener(_-> {
             modificar();
             cargarTablaUsuarios(); // Refrescar la tabla después del CRUD
         });
-        vista.btnEliminar.addActionListener(e -> {
+        vista.btnEliminar.addActionListener(_-> {
             eliminar();
             cargarTablaUsuarios(); // Refrescar la tabla después del CRUD
         });
-        vista.btnLimpiar.addActionListener(e -> clearViewFields());
-        vista.regresarAlMenuButton.addActionListener(e -> regresarAlMenu());
+        vista.btnLimpiar.addActionListener(_-> clearViewFields());
+        vista.regresarAlMenuButton.addActionListener(_-> regresarAlMenu());
     }
 
     @Override

@@ -7,15 +7,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CalificacionDAO {
 
     /**
      * Inserta una nueva calificación en la tabla.
+     *
      * @param calificacion DTO con los datos a insertar.
      * @return true si la inserción fue exitosa.
      */
@@ -43,6 +44,7 @@ public class CalificacionDAO {
 
     /**
      * Elimina una calificación existente usando la clave compuesta (idUsuario, idCancion).
+     *
      * @param calificacion DTO con las claves a eliminar.
      * @return true si la eliminación fue exitosa.
      */
@@ -64,6 +66,7 @@ public class CalificacionDAO {
 
     /**
      * Modifica los detalles de una calificación existente.
+     *
      * @param calificacion DTO con los nuevos datos y las claves.
      * @return true si la modificación fue exitosa.
      */
@@ -91,12 +94,9 @@ public class CalificacionDAO {
         }
     }
 
-    // ------------------------------------------------------------------------------------------
-    // MÉTODOS AÑADIDOS
-    // ------------------------------------------------------------------------------------------
-
     /**
      * Verifica si ya existe una calificación para el par Usuario-Canción.
+     *
      * @param idUsuario ID del usuario.
      * @param idCancion ID de la canción.
      * @return true si ya existe una calificación, false en caso contrario.
@@ -123,6 +123,7 @@ public class CalificacionDAO {
 
     /**
      * Obtiene una calificación específica para el par Usuario-Canción.
+     *
      * @param calificacion DTO que contiene las claves de búsqueda (idUsuario, idCancion).
      * @return El objeto Calificacion si se encuentra, o un objeto vacío (con las claves) si no se encuentra o hay error.
      */
@@ -132,12 +133,12 @@ public class CalificacionDAO {
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            // Nota: Se invirtieron las posiciones para coincidir con la query (idUsuario primero)
             ps.setInt(1, calificacion.getIdUsuario());
             ps.setInt(2, calificacion.getIdCancion());
 
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) { // Usamos if en lugar de while, solo esperamos un resultado
+                // Usamos if en lugar de while, solo esperamos un resultado
+                if (rs.next()) {
                     calificacion.setCalificacion(rs.getString("calificacion"));
                     calificacion.setComentario(rs.getString("comentario"));
                     calificacion.setFechaCalificacion(rs.getObject("fechaCalificacion", LocalDate.class));
@@ -154,6 +155,7 @@ public class CalificacionDAO {
 
     /**
      * Obtiene una lista de todas las calificaciones registradas en la base de datos.
+     *
      * @return Una lista de objetos Calificacion. Puede estar vacía si no hay registros o si ocurre un error.
      */
     public List<Calificacion> getCalificaciones() {

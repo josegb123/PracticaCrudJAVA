@@ -15,10 +15,6 @@ public class MainView extends JFrame implements BaseView {
     public JButton calificacionesButton;
 
     public MainView(){
-        // Al usar el diseñador, estos métodos a menudo son llamados dentro del
-        // método 'initComponents()' (o similar) que genera IntelliJ, pero es seguro
-        // llamarlos aquí para asegurar la configuración final:
-
         // Usamos la implementación de JFrame (super) para configurar la ventana
         super.setContentPane(contentPane); // Usa el contentPane generado por el diseñador
         super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

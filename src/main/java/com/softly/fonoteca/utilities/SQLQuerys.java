@@ -45,7 +45,7 @@ public class SQLQuerys {
         }
 
         String columnNames = String.join(", ", columns);
-        String placeholders = String.join(", ", Arrays.stream(columns).map(col -> "?").toArray(String[]::new));
+        String placeholders = String.join(", ", Arrays.stream(columns).map(_ -> "?").toArray(String[]::new));
 
         switch (type) {
             case INSERT:
@@ -141,7 +141,7 @@ public class SQLQuerys {
 
             // 1. Obtener Metadatos para los nombres de las columnas
             ResultSetMetaData metaData = rs.getMetaData();
-            int columnCount = metaData.getColumnCount(); // 💡 CORRECCIÓN: Leer TODAS las columnas
+            int columnCount = metaData.getColumnCount();
 
             // Vector para almacenar los nombres de las columnas (encabezados)
             Vector<String> columnNames = new Vector<>();
@@ -154,7 +154,7 @@ public class SQLQuerys {
             // 2. Llenar las filas del modelo
             while (rs.next()) {
                 Vector<Object> row = new Vector<>(columnCount);
-                for (int i = 1; i <= columnCount; i++) { // 💡 CORRECCIÓN: Leer hasta columnCount
+                for (int i = 1; i <= columnCount; i++) {
                     // Obtener el valor de cada columna en la fila actual
                     row.add(rs.getObject(i));
                 }
@@ -162,7 +162,7 @@ public class SQLQuerys {
             }
 
         } catch (SQLException e) {
-            System.err.println(STR."Error al construir el modelo de tabla para '\{table}': \{e.getMessage()}");
+            System.err.println("Error al construir el modelo de tabla para " +table + " :" + e.getMessage());
             // Retorna un modelo vacío en caso de error
             return new DefaultTableModel();
         }
@@ -201,8 +201,7 @@ public class SQLQuerys {
             }
 
         } catch (SQLException e) {
-            System.err.println(STR."Error al obtener \{displayColumnName} de \{table} con ID \{idValue}: \{e.getMessage()}");
-            // Nota: Aquí solo registramos el error y devolvemos null
+            System.err.println("Error al obtener " + displayColumnName + " de" + table + " con ID " + idValue + " " + e.getMessage());
         }
         return result;
     }

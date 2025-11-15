@@ -23,8 +23,7 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
     // Campo estático para mantener la única instancia
     private static AlbumController instance;
 
-    // 🌟 1. DEFINICIÓN DE LA TABLA 🌟
-    private static final String TABLE_NAME = "albumnes"; // Corregido el nombre a 'albumnes' según tu uso en CancionController
+    private static final String TABLE_NAME = "albumnes";
     private static final String[] DB_COLUMNS_TO_SHOW =
             {"titulo", "selloDiscografico", "fechaLanzamiento", "idGeneroPrincipal"};
 
@@ -116,12 +115,12 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
             modelo.setFechaLanzamiento(fechaLanzamiento);
 
             ComboBoxItem generoSeleccionado = (ComboBoxItem) vista.cmbGenero.getSelectedItem();
-            modelo.setIdGeneroPrincipal(generoSeleccionado.getId());
+            modelo.setIdGeneroPrincipal(generoSeleccionado != null ? generoSeleccionado.getId() : 0);
 
             return true;
         } catch (Exception e) {
-            System.err.println(STR."Error al recolectar datos: \{e.getMessage()}");
-            JOptionPane.showMessageDialog(vista, STR."Error interno al recolectar datos: \{e.getMessage()}", "Error Crítico", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al recolectar datos: " + e.getMessage());
+            JOptionPane.showMessageDialog(vista, "Error interno al recolectar datos: " + e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
@@ -178,7 +177,7 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
             Map<String, Object> componentMappings = new HashMap<>();
             componentMappings.put("titulo", vista.txtTitulo);
             componentMappings.put("selloDiscografico", vista.txtSello);
-            componentMappings.put("fechaLanzamiento", vista.txtFecha); // Asumiendo que txtFecha manejará el formato
+            componentMappings.put("fechaLanzamiento", vista.txtFecha);
             componentMappings.put("idGeneroPrincipal", vista.cmbGenero); // ComboBox
 
             // Usamos el método genérico para cargar los campos
@@ -226,8 +225,7 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
         vista.regresarButton.addActionListener(_ -> regresarAlMenu());
         vista.limpiarCamposButton.addActionListener(_ -> clearViewFields());
 
-        // ⚠️ NOTA: El botón buscar no tiene un listener asociado en el código original,
-        // por lo que se mantiene solo el listener de la tabla para la carga de detalles.
+
     }
 
     /**
@@ -236,9 +234,7 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
      */
     @Override
     public void iniciar() {
-        System.out.println("DEBUG: Se ha llamado a iniciar() para la vista: " + this.vista.getClass().getSimpleName());
         this.vista.pack();
-        // Usamos HIDE_ON_CLOSE para que la ventana permanezca cargada en memoria.
         this.vista.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.vista.setVisible(true);
         this.vista.setLocationRelativeTo(null);

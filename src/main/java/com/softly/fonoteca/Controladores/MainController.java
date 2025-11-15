@@ -20,11 +20,11 @@ public class MainController {
     }
 
     private void agregarListeners() {
-        this.vistaPrincipal.cancionesButton.addActionListener(e -> launchCancionModule());
-        this.vistaPrincipal.usuariosButton.addActionListener(e -> launchUsuariosModule());
-        this.vistaPrincipal.reproduccionesButton.addActionListener(e->launchReproduccionesModule());
-        this.vistaPrincipal.calificacionesButton.addActionListener(e->launchComentariosModule());
-        this.vistaPrincipal.salirButton.addActionListener(e-> this.vistaPrincipal.dispose());
+        this.vistaPrincipal.cancionesButton.addActionListener(_-> launchCancionModule());
+        this.vistaPrincipal.usuariosButton.addActionListener(_-> launchUsuariosModule());
+        this.vistaPrincipal.reproduccionesButton.addActionListener(_->launchReproduccionesModule());
+        this.vistaPrincipal.calificacionesButton.addActionListener(_->launchComentariosModule());
+        this.vistaPrincipal.salirButton.addActionListener(_-> this.vistaPrincipal.dispose());
     }
 
     private void launchReproduccionesModule() {

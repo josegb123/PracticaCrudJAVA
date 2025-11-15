@@ -27,14 +27,9 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
     protected final D consultas;
     protected BaseView vistaPrincipal;
 
-    // 🌟 NUEVO: Variable para almacenar el modelo de datos crudo de la tabla
     protected DefaultTableModel rawModel;
-
-    // 🌟 NUEVO: Referencia a la tabla principal si la vista la tiene.
-    // Esto se inicializará en el constructor del controlador hijo.
     protected JTable mainTable;
 
-    // Constructor se mantiene igual
     public BaseController(T modelo, V vista, D consultas, BaseView vistaPrincipal) {
         this.modelo = modelo;
         this.vista = vista;
@@ -45,15 +40,18 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
 
     protected abstract int getModelId();
 
-    // --- MÉTODOS ABSTRACTOS REQUERIDOS (Se mantienen igual) ---
+    // --- MÉTODOS ABSTRACTOS REQUERIDOS ---
 
-    protected abstract boolean collectDataFromView() throws Exception;
+    protected abstract boolean collectDataFromView();
+
     protected abstract void loadDataToView(T dto);
+
     protected abstract void clearViewFields();
+
     protected abstract void agregarListeners();
 
     // ----------------------------------------------------------------------
-    // 🌟 LÓGICA DE TABLA GENÉRICA OPCIONAL
+    // LÓGICA DE TABLA GENÉRICA OPCIONAL
     // ----------------------------------------------------------------------
 
     /**
@@ -63,6 +61,7 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
      * Ejemplo en ReproduccionesController:
      * vista.tablaReproducciones.getSelectionModel().addListSelectionListener(this::loadTableDetailsToView);
      * * @param e El evento de selección de lista.
+     *
      * @param componentMappings Mapa que relaciona nombres de columna BD con componentes Swing.
      */
     protected void loadTableDetailsToView(ListSelectionEvent e, Map<String, Object> componentMappings) {
@@ -95,10 +94,11 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
      * Carga el modelo crudo (rawModel) de la BD y lo filtra para mostrar solo
      * las columnas especificadas en el JTable de la vista.
      * * @param tableName Nombre de la tabla de la BD (ej. "usuarios").
-     * @param columnsToShow (Opcional) Array de Strings con los nombres de las columnas BD a mostrar.
-     * Si es null o vacío, se muestran TODAS las columnas.
+     *
+     * @param columnsToShow      (Opcional) Array de Strings con los nombres de las columnas BD a mostrar.
+     *                           Si es null o vacío, se muestran TODAS las columnas.
      * @param displayColumnNames (Opcional) Array de Strings con los nombres que tendrán las columnas
-     * para la cabecera de la tabla. Debe coincidir en longitud con columnsToShow.
+     *                           para la cabecera de la tabla. Debe coincidir en longitud con columnsToShow.
      */
     protected void cargarTabla(String tableName, String[] columnsToShow, String[] displayColumnNames) {
         try {
@@ -151,7 +151,7 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
                     } else {
                         // Columna solicitada no existe en la BD
                         rowData.add(null);
-                        System.err.println(STR."Advertencia: Columna '\{colName})' solicitada pero no encontrada en la BD.");
+                        System.err.println("Advertencia: Columna " + colName + " solicitada pero no encontrada en la BD.");
                     }
                 }
                 finalModel.addRow(rowData.toArray());
@@ -160,8 +160,8 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
             this.mainTable.setModel(finalModel);
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this.vista, STR."Error al cargar la tabla: \{e.getMessage()}", "Error de BD", JOptionPane.ERROR_MESSAGE);
-            System.err.println(STR."❌ ERROR FATAL en cargarTabla: \{e.getMessage()}");
+            JOptionPane.showMessageDialog(this.vista, "Error al cargar la tabla:" + e.getMessage(), "Error de BD", JOptionPane.ERROR_MESSAGE);
+            System.err.println("❌ ERROR FATAL en cargarTabla: " + e.getMessage());
         }
     }
 
@@ -176,7 +176,6 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
                 if (consultas.registrar(modelo)) {
                     JOptionPane.showMessageDialog(vista, "Registro exitoso.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     clearViewFields();
-                    // 🌟 Opcional: Llamar a un método abstracto 'refreshTable()' si aplica
                 } else {
                     JOptionPane.showMessageDialog(vista, "Error: No se pudo registrar. Verifique la consola.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -199,7 +198,6 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
                 if (consultas.modificar(modelo)) {
                     JOptionPane.showMessageDialog(vista, "Modificación exitosa.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     clearViewFields();
-                    // 🌟 Opcional: Llamar a un método abstracto 'refreshTable()' si aplica
                 } else {
                     JOptionPane.showMessageDialog(vista, "Error: No se pudo modificar. Verifique la consola.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -228,7 +226,6 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
                 if (consultas.eliminar(idAEliminar)) {
                     JOptionPane.showMessageDialog(vista, "Registro eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     clearViewFields();
-                    // 🌟 Opcional: Llamar a un método abstracto 'refreshTable()' si aplica
                 } else {
                     JOptionPane.showMessageDialog(vista, "Error: No se pudo eliminar. Verifique la consola.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -236,17 +233,6 @@ public abstract class BaseController<T, V extends Component & CRUDView, D extend
         } catch (Exception e) {
             JOptionPane.showMessageDialog(vista, "Error al procesar la eliminación: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    protected T buscarRegistroPorId(int id) {
-        T encontrado = consultas.buscarPorId(id);
-        if (encontrado != null) {
-            loadDataToView(encontrado);
-            JOptionPane.showMessageDialog(vista, "Registro encontrado con ID: " + id, "Búsqueda Exitosa", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(vista, "Registro con ID " + id + " no encontrado.", "No Encontrado", JOptionPane.WARNING_MESSAGE);
-        }
-        return encontrado;
     }
 
     protected void regresarAlMenu() {

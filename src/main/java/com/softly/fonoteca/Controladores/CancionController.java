@@ -13,6 +13,7 @@ import com.softly.fonoteca.utilities.SQLQuerys;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -21,11 +22,6 @@ import java.util.Map;
  */
 public class CancionController extends BaseController<Cancion, CancionesVista, CancionDAO> {
 
-    // 🌟 1. DEFINICIÓN DE COLUMNAS A MOSTRAR 🌟
-    // Se asume que el rawModel se construye con JOINS o que los nombres de las tablas relacionadas
-    // (interpretes, generos) tienen las columnas 'nombre' y se puede mapear.
-    // Usaremos columnas simples en el rawModel para el mapeo a la vista, y usaremos el método genérico
-    // para mostrar las columnas requeridas: titulo, idInterprete, idGenero, idioma.
     private static final String TABLE_NAME = "canciones";
     private static final String[] DB_COLUMNS_TO_SHOW =
             {"titulo", "idInterpretePrincipal", "idGenero", "idioma"};
@@ -77,25 +73,25 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
         this.vista.tablaCanciones.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD
-        this.vista.getBtnAgregar().addActionListener(e -> {
+        this.vista.getBtnAgregar().addActionListener(_ -> {
             registrar();
             cargarTablaCanciones();
         });
-        this.vista.getBtnModificar().addActionListener(e -> {
+        this.vista.getBtnModificar().addActionListener(_ -> {
             modificar();
             cargarTablaCanciones();
         });
-        this.vista.getBtnEliminar().addActionListener(e -> {
+        this.vista.getBtnEliminar().addActionListener(_ -> {
             eliminar();
             cargarTablaCanciones();
         });
-        this.vista.getBtnLimpiar().addActionListener(e -> clearViewFields());
+        this.vista.getBtnLimpiar().addActionListener(_ -> clearViewFields());
 
         // Listeners de navegación (BaseController)
-        this.vista.getBtnRegresarMenu().addActionListener(e -> regresarAlMenu());
+        this.vista.getBtnRegresarMenu().addActionListener(_ -> regresarAlMenu());
 
         // Listeners a otras ventanas de administración
-        this.vista.administarAlbumnesButton.addActionListener(e -> {
+        this.vista.administarAlbumnesButton.addActionListener(_ -> {
             Album modeloAlbum = new Album();
             AlbumVista vistaAlbum = new AlbumVista();
             AlbumDAO consultasAlbum = new AlbumDAO();
@@ -103,14 +99,12 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
             this.vista.setVisible(false);
         });
 
-        this.vista.administrarGenerosButton.addActionListener(e -> {
-            launchGeneros();
-        });
-        this.vista.administrarInterpretesButton.addActionListener(e-> {
+        this.vista.administrarGenerosButton.addActionListener(_ -> launchGeneros());
+        this.vista.administrarInterpretesButton.addActionListener(_ -> {
             Interprete interprete = new Interprete();
             InterpretesVista interpretesVista = new InterpretesVista();
             InterpreteDAO interpreteDAO = new InterpreteDAO();
-            InterpreteController interpreteController = InterpreteController.getInstance(interprete,interpretesVista,interpreteDAO,this.vista);
+            InterpreteController interpreteController = InterpreteController.getInstance(interprete, interpretesVista, interpreteDAO, this.vista);
             interpreteController.iniciar();
             this.vista.setVisible(false);
         });
@@ -122,7 +116,7 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
         Genero genero = new Genero();
         GenerosVista generosVista = new GenerosVista();
         GeneroDAO consultasGenero = new GeneroDAO();
-        GenerosController generosController = GenerosController.getInstance(genero, generosVista, consultasGenero, vista);        System.out.println("DEBUG: Se creó el GenerosController. Ocultando vista actual.");
+        GenerosController generosController = GenerosController.getInstance(genero, generosVista, consultasGenero, vista);
         this.vista.setVisible(false);
     }
 
@@ -162,11 +156,11 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
 
             // Asignación de ComboBoxes (IDs foráneos)
             ComboBoxItem albumSeleccionado = (ComboBoxItem) vista.cmbAlbum.getSelectedItem();
-            modelo.setAlbum(albumSeleccionado.getId());
+            modelo.setAlbum(albumSeleccionado != null ? albumSeleccionado.getId() : 0);
             ComboBoxItem interpreteSeleccionado = (ComboBoxItem) vista.cmbInterprete.getSelectedItem();
-            modelo.setInterprete(interpreteSeleccionado.getId());
+            modelo.setInterprete(interpreteSeleccionado != null ? interpreteSeleccionado.getId() : 0);
             ComboBoxItem generoSeleccionado = (ComboBoxItem) vista.cmbGenero.getSelectedItem();
-            modelo.setGenero(generoSeleccionado.getId());
+            modelo.setGenero(generoSeleccionado != null ? generoSeleccionado.getId() : 0);
 
             modelo.setInstrumental(vista.esInstrumentalCheckBox.isSelected());
 
@@ -221,7 +215,7 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
     @Override
     protected void clearViewFields() {
         modelo.setIdCancion(0);
-        vista.txtIDCancion.setText(""); // Asumo que existe un txtIdCancion
+        vista.txtIDCancion.setText("");
         vista.txtTitulo.setText("");
         vista.txtDuracion.setText("");
         vista.txtBPM.setText("");
@@ -234,9 +228,6 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
         vista.tablaCanciones.clearSelection();
     }
 
-    // ------------------------------------------
-    // --- MÉTODOS LOCALES ESPECÍFICOS ---
-    // ------------------------------------------
 
     /**
      * Carga los modelos de ComboBox (Álbum, Género, Intérprete) desde la BD.
@@ -256,30 +247,6 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
         cargarTabla(TABLE_NAME, DB_COLUMNS_TO_SHOW, DISPLAY_COLUMNS_HEADERS);
     }
 
-    /**
-     * Lógica local para buscar una canción por su ID ingresado en el campo de búsqueda.
-     */
-    private void buscarCancion() {
-        try {
-            String idText = this.vista.getSearchText().trim();
-
-            if (idText.isEmpty()) {
-                JOptionPane.showMessageDialog(vista, "Ingrese un ID de canción.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            int id = Integer.parseInt(idText);
-
-            // Llama a la lógica de búsqueda, mensaje y carga de la clase base
-            buscarRegistroPorId(id);
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(vista, "El valor de búsqueda debe ser un ID numérico.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            System.err.println("Error en buscarCancion(): " + e.getMessage());
-            JOptionPane.showMessageDialog(vista, "Ocurrió un error al buscar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 
     /**
      * Valida todos los campos del formulario, resaltando errores y mostrando mensajes.
@@ -287,7 +254,7 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
      * @return true si todos los campos son válidos; false en caso contrario.
      */
     private boolean validarDatos() {
-        java.util.LinkedHashMap<javax.swing.JComponent, String[]> validaciones = new java.util.LinkedHashMap<>();
+        LinkedHashMap<JComponent, String[]> validaciones = new LinkedHashMap<>();
 
         validaciones.put(vista.txtTitulo, new String[]{"required", "Título"});
         validaciones.put(vista.txtDuracion, new String[]{"required", "time", "Duración"});
@@ -300,8 +267,8 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
 
         boolean formularioValido = true;
 
-        for (java.util.Map.Entry<javax.swing.JComponent, String[]> entry : validaciones.entrySet()) {
-            javax.swing.JComponent componente = entry.getKey();
+        for (Map.Entry<JComponent, String[]> entry : validaciones.entrySet()) {
+            JComponent componente = entry.getKey();
             String[] datos = entry.getValue();
 
             String nombreCampo = datos[datos.length - 1];
@@ -351,15 +318,11 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
 
             try {
                 // 2. Manejo del ID y otros campos especiales para el DTO
-
-                // Obtener ID (necesario para CRUD y mostrar en vista.txtIdCancion)
                 int col_id = rawModel.findColumn("idCancion");
                 int idCancion = (int) rawModel.getValueAt(selectedRow, col_id);
                 modelo.setIdCancion(idCancion);
                 vista.txtIDCancion.setText(String.valueOf(idCancion));
-
                 // Cargar fechas y otros valores al modelo que no están en el mapeo principal
-                // (asumo que loadTableDetailsToView maneja los valores de texto/combo al modelo)
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(vista, "Error al cargar datos de la canción: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

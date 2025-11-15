@@ -12,12 +12,9 @@ import java.util.Map;
 
 public class GenerosController extends BaseController<Genero, GenerosVista, GeneroDAO> {
 
-    // 🌟 1. Campo estático para mantener la única instancia
+    private static final String TABLE_NAME = "generos";
     private static GenerosController instance;
 
-    private static final String TABLE_NAME = "generos";
-
-    // 🌟 2. Hacemos el constructor privado para prevenir la instanciación externa
     private GenerosController(Genero modelo, GenerosVista vista, GeneroDAO consultas, BaseView vistaPrincipal) {
         super(modelo, vista, consultas, vistaPrincipal);
 
@@ -25,16 +22,16 @@ public class GenerosController extends BaseController<Genero, GenerosVista, Gene
         cargarTablaGeneros();
         agregarListeners();
 
-        // 🌟 3. Llamamos a iniciar() aquí. Solo se ejecuta una vez cuando se crea la instancia.
         iniciar();
     }
 
     /**
-     * 🌟 4. Método estático de acceso para obtener la única instancia (Singleton).
+     * Método estático de acceso para obtener la única instancia (Singleton).
      * Si la instancia no existe, la crea; si ya existe, devuelve la existente.
-     * @param modelo DTO de Género.
-     * @param vista Vista de Géneros.
-     * @param consultas DAO de Género.
+     *
+     * @param modelo         DTO de Género.
+     * @param vista          Vista de Géneros.
+     * @param consultas      DAO de Género.
      * @param vistaPrincipal Vista desde donde se llama.
      * @return La única instancia de GenerosController.
      */
@@ -71,9 +68,9 @@ public class GenerosController extends BaseController<Genero, GenerosVista, Gene
     }
 
     @Override
-    protected boolean collectDataFromView() throws Exception {
+    protected boolean collectDataFromView() {
         try {
-            // Manejo del ID: Si el campo está vacío, asumimos un nuevo registro (ID=0).
+
             if (!vista.txtIdGenero.getText().isEmpty()) {
                 modelo.setIdGenero(Integer.parseInt(vista.txtIdGenero.getText()));
             } else {
@@ -93,8 +90,8 @@ public class GenerosController extends BaseController<Genero, GenerosVista, Gene
             JOptionPane.showMessageDialog(vista, "El ID debe ser un número válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
             return false;
         } catch (Exception e) {
-            System.err.println(STR."Error al recolectar datos: \{e.getMessage()}");
-            JOptionPane.showMessageDialog(vista, STR."Error interno: \{e.getMessage()}", "Error Crítico", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error al recolectar datos: " + e.getMessage());
+            JOptionPane.showMessageDialog(vista, "Error interno: " + e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
@@ -159,21 +156,21 @@ public class GenerosController extends BaseController<Genero, GenerosVista, Gene
         vista.tablaGeneros.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD (Refrescar tabla después de la operación)
-        vista.agregarButton.addActionListener(e -> {
+        vista.agregarButton.addActionListener(_ -> {
             registrar();
             cargarTablaGeneros();
         });
-        vista.eliminarButton.addActionListener(e -> {
+        vista.eliminarButton.addActionListener(_ -> {
             eliminar();
             cargarTablaGeneros();
         });
-        vista.modificarButton.addActionListener(e -> {
+        vista.modificarButton.addActionListener(_ -> {
             modificar();
             cargarTablaGeneros();
         });
 
-        vista.limpiarCamposButton.addActionListener(e -> clearViewFields());
-        vista.regresarButton.addActionListener(e -> regresarAlMenu());
+        vista.limpiarCamposButton.addActionListener(_ -> clearViewFields());
+        vista.regresarButton.addActionListener(_ -> regresarAlMenu());
     }
 
     @Override

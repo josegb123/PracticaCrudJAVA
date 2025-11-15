@@ -115,10 +115,7 @@ public abstract class BaseDAO<T> {
         try (Connection con = ConexionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            mapToStatement(ps, dto); // Mapeo definido por la clase hija
-
-            // Si el DTO tiene un ID, se asume que es un INSERT que genera ID.
-            // Si se usa un método auxiliar para asignar el ID, puedes manejarlo aquí.
+            mapToStatement(ps, dto);
 
             ps.executeUpdate();
             return true;
@@ -126,7 +123,7 @@ public abstract class BaseDAO<T> {
         } catch (SQLException e) {
             System.err.println("Error al registrar " + dto.getClass().getSimpleName());
             System.err.println("SQL Error: " + e.getMessage());
-            e.printStackTrace();
+            
             return false;
         }
     }
@@ -155,7 +152,7 @@ public abstract class BaseDAO<T> {
         } catch (SQLException e) {
             System.err.println("Error al modificar " + dto.getClass().getSimpleName());
             System.err.println("SQL Error: " + e.getMessage());
-            e.printStackTrace();
+            
             return false;
         }
     }
@@ -176,7 +173,7 @@ public abstract class BaseDAO<T> {
         } catch (SQLException e) {
             System.err.println("Error al eliminar el registro con ID: " + id);
             System.err.println("SQL Error: " + e.getMessage());
-            e.printStackTrace();
+            
             return false;
         }
     }
@@ -201,7 +198,7 @@ public abstract class BaseDAO<T> {
 
         } catch (SQLException e) {
             System.err.println("Error al buscar registro por ID: " + id);
-            e.printStackTrace();
+            
         }
         return dto;
     }
@@ -223,7 +220,7 @@ public abstract class BaseDAO<T> {
 
         } catch (SQLException e) {
             System.err.println("Error al obtener todos los registros.");
-            e.printStackTrace();
+            
         }
         return lista;
     }

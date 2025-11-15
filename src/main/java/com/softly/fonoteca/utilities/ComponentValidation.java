@@ -130,7 +130,6 @@ public class ComponentValidation {
             return;
         }
 
-        // --- Caso Error ---
         String mensajeError = switch (reglaFallida) {
             case "required" -> "El campo **'" + nombreCampo + "'** es obligatorio.";
             case "localdate" -> "El campo **'" + nombreCampo + "'** debe tener el formato AAAA-MM-DD.";

@@ -7,15 +7,9 @@ import javax.swing.table.DefaultTableModel;
 import java.util.HashMap;
 import java.util.Map;
 
-// Asumo la existencia de la clase SQLQuerys y BaseView (aunque BaseView no se usa aquí)
-
 public class TablaUtils {
 
     /**
-     * NOTA: Este método de carga de tabla es demasiado dependiente de la lógica de negocio
-     * (el orden y el tipo de columnas a mostrar) para ser realmente genérico.
-     * Se recomienda manejar la lógica de transformación de IDs a nombres directamente en cada Controlador.
-     * Este método solo se mantiene para devolver el rawModel.
      * * @param tableName Nombre de la tabla de la BD.
      * @param displayColumns Array de nombres de columnas para el modelo final (vista).
      * @param table JTable de la vista donde se mostrarán los datos.
@@ -32,12 +26,6 @@ public class TablaUtils {
                 table.setModel(new DefaultTableModel(displayColumns, 0));
                 return rawModel;
             }
-
-            // --- Lógica de transformación eliminada para mantener el método simple y no fallar ---
-
-            // En un caso real, aquí iría la transformación:
-            // DefaultTableModel finalModel = Controlador.convertirIDsANombres(rawModel);
-            // table.setModel(finalModel);
 
             // Devolvemos el modelo crudo para que el controlador pueda usarlo en el mapeo de selección.
             return rawModel;
@@ -66,7 +54,7 @@ public class TablaUtils {
 
                 int rawColIndex = rawModel.findColumn(columnName);
                 if (rawColIndex == -1) {
-                    // CORRECCIÓN: Uso de concatenación simple
+
                     System.err.println("Advertencia: Columna '" + columnName + "' no encontrada en el modelo crudo.");
                     continue;
                 }
@@ -87,15 +75,12 @@ public class TablaUtils {
                         // Asegurar que SQLQuerys.setSelectedItemById exista y funcione
                         SQLQuerys.setSelectedItemById(cmb, id);
                     } else {
-                        // CORRECCIÓN: Uso de concatenación simple
                         System.err.println("Error: El valor de la columna '" + columnName + "' no es un entero para JComboBox.");
                     }
                 }
-                // Nota: Los componentes DatePicker y TimePicker requieren manejo manual en el controlador.
             }
 
         } catch (Exception e) {
-            // CORRECCIÓN: Uso de concatenación simple
             System.err.println("❌ ERROR en cargarDetalleGenerico: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Error al cargar los detalles de la fila seleccionada: " + e.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
         }
