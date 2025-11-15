@@ -1,54 +1,44 @@
 package com.softly.fonoteca.utilities;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
-import java.util.Base64;
+import at.favre.lib.crypto.bcrypt.BCrypt; // Importar la librería BCrypt
+import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 
+/**
+ * Clase de utilidad para el hashing y verificación de contraseñas usando el
+ * algoritmo BCrypt, compatible con las funciones nativas de PHP.
+ */
 public class SecurityUtils {
 
-    // Configuración recomendada
-    private static final int ITERATIONS = 65536; // Alto número de iteraciones
-    private static final int KEY_LENGTH = 256; // Longitud de la clave en bits
-    private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
+    // Costo recomendado para BCrypt: 12 es un buen equilibrio para 2024.
+    private static final int BCRYPT_COST = 12;
 
     private SecurityUtils() {
         // Constructor privado para prevenir la instanciación
     }
-    // Genera el hash de la contraseña y el salto para almacenar
-    public static String hashPassword(String password) throws Exception {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16]; // Salto de 16 bytes (128 bits)
-        random.nextBytes(salt);
 
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
-
-        byte[] hash = factory.generateSecret(spec).getEncoded();
-
-        // Almacena el salto y el hash juntos, usualmente codificados en Base64
-        String saltBase64 = Base64.getEncoder().encodeToString(salt);
-        String hashBase64 = Base64.getEncoder().encodeToString(hash);
-
-        // Formato para guardar en la base de datos: "salto:hash"
-        return saltBase64 + ":" + hashBase64;
+    /**
+     * Genera el hash de la contraseña usando BCrypt.
+     * Este método solo se debe usar para registrar nuevas contraseñas.
+     * * @param password La contraseña en texto plano.
+     * @return El hash BCrypt completo (incluye el costo y el sal).
+     */
+    public static String hashPassword(char[] password) {
+        // Usa la implementación de 'favre lib' para hashear
+        // El hashing se realiza directamente con el array de caracteres para mejor seguridad en memoria.
+        return BCrypt.withDefaults().hashToString(BCRYPT_COST, password);
     }
-    public static boolean verifyPassword(String password, String storedHashAndSalt) throws Exception {
-        String[] parts = storedHashAndSalt.split(":");
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Invalid stored password format");
-        }
 
-        byte[] salt = Base64.getDecoder().decode(parts[0]);
-        byte[] storedHash = Base64.getDecoder().decode(parts[1]);
+    /**
+     * Verifica una contraseña en texto plano contra un hash BCrypt almacenado.
+     * * @param passwordChars La contraseña en texto plano como array de caracteres.
+     * @param storedHash El hash BCrypt almacenado en la base de datos.
+     * @return True si la contraseña es válida, False en caso contrario.
+     */
+    public static boolean verifyPassword(char[] passwordChars, String storedHash) {
+        // El verificador de BCrypt extrae el sal y el costo del storedHash automáticamente
+        // y realiza una comparación de tiempo constante.
+        Result result = BCrypt.verifyer().verify(passwordChars, storedHash);
 
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
-
-        byte[] incomingHash = factory.generateSecret(spec).getEncoded();
-
-        // Compara los hashes de forma segura para prevenir ataques de temporización
-        return java.util.Arrays.equals(storedHash, incomingHash);
+        return result.verified;
     }
 }

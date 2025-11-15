@@ -2,7 +2,7 @@ package com.softly.fonoteca.Vistas;
 
 import javax.swing.*;
 
-public class InterpretesVista extends JFrame implements CRUDView{
+public class InterpretesVista extends JFrame implements CRUDView {
     public JPanel contentPane;
     public JTextField txtID;
     public JTextField txtNombre;
@@ -11,7 +11,7 @@ public class InterpretesVista extends JFrame implements CRUDView{
     public JTextField txtTitulo;
     public JComboBox cmbGenero;
     public JTextField txtSearch;
-    public JButton buscarButton;
+    
     public JButton agregarButton;
     public JButton modificarButton;
     public JButton eliminarButton;
@@ -19,7 +19,7 @@ public class InterpretesVista extends JFrame implements CRUDView{
     public JButton regresarButton;
     public JTable tablaInterpretes;
 
-    public InterpretesVista(){
+    public InterpretesVista() {
         super.setContentPane(contentPane);
     }
 
@@ -36,11 +36,6 @@ public class InterpretesVista extends JFrame implements CRUDView{
     @Override
     public JButton getBtnEliminar() {
         return eliminarButton;
-    }
-
-    @Override
-    public JButton getBuscarButton() {
-        return buscarButton;
     }
 
     @Override

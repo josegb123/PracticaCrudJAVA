@@ -53,11 +53,6 @@ public class ReproduccionesVista extends JFrame implements CRUDView{
     }
 
     @Override
-    public JButton getBuscarButton() {
-        return null;
-    }
-
-    @Override
     public JButton getBtnRegresarMenu() {
         return null;
     }

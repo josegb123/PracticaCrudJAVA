@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class Usuario {
     private int id;
     private String email;
-    private String password;
+    private String hashedPassword;
     private String nombres;
     private String apellidos;
     private String sexo;
@@ -20,12 +20,12 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int id, String email, String password, String nombres, String apellidos, String sexo,
-            LocalDate fechaNacimiento, String paisNacimiento, String paisResidencia, String idioma,
-            LocalDateTime fechaRegistro) {
+    public Usuario(int id, String email, String hashedPassword, String nombres, String apellidos, String sexo,
+                   LocalDate fechaNacimiento, String paisNacimiento, String paisResidencia, String idioma,
+                   LocalDateTime fechaRegistro) {
         this.id = id;
         this.email = email;
-        this.password = password;
+        this.hashedPassword = hashedPassword;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.sexo = sexo;
@@ -52,12 +52,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
     }
 
     public String getNombres() {

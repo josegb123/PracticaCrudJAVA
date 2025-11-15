@@ -2,7 +2,7 @@ package com.softly.fonoteca.Vistas;
 
 import javax.swing.*;
 
-public class CancionesVista extends JFrame implements CRUDView{
+public class CancionesVista extends JFrame implements CRUDView {
     public JPanel contentPane;
     public JTextField txtIDCancion;
     public JTextField txtTitulo;
@@ -16,7 +16,7 @@ public class CancionesVista extends JFrame implements CRUDView{
     public JButton modificarButton;
     public JButton eliminarButton;
     public JButton limpiarButton;
-    public JButton buscarButton;
+    
     public JComboBox cmbAlbum;
     public JComboBox cmbGenero;
     public JComboBox cmbInterprete;
@@ -27,7 +27,7 @@ public class CancionesVista extends JFrame implements CRUDView{
     public JTable tablaCanciones;
 
 
-    public CancionesVista(){
+    public CancionesVista() {
         super.setContentPane(contentPane);
     }
 
@@ -44,11 +44,6 @@ public class CancionesVista extends JFrame implements CRUDView{
     @Override
     public JButton getBtnEliminar() {
         return eliminarButton;
-    }
-
-    @Override
-    public JButton getBuscarButton() {
-        return buscarButton;
     }
 
     @Override

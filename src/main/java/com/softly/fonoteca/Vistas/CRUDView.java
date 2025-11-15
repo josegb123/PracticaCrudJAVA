@@ -7,7 +7,6 @@ public interface CRUDView extends BaseView {
     JButton getBtnAgregar();
     JButton getBtnModificar();
     JButton getBtnEliminar();
-    JButton getBuscarButton();
     JButton getBtnRegresarMenu();
     JButton getBtnLimpiar();
 

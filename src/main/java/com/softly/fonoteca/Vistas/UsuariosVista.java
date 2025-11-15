@@ -14,7 +14,7 @@ public class UsuariosVista extends JFrame implements CRUDView {
     public JTextField txtFechaN;
     public JTextField txtFechaR;
     public JTextField txtSearch;
-    public JButton buscarButton;
+    
     public JButton btnAgregar;
     public JButton btnModificar;
     public JButton btnEliminar;
@@ -24,10 +24,9 @@ public class UsuariosVista extends JFrame implements CRUDView {
     public JTable tablaUsuarios;
 
 
-    public UsuariosVista(){
+    public UsuariosVista() {
         super.setContentPane(contentPane);
     }
-
 
     @Override
     public JButton getBtnAgregar() {
@@ -42,11 +41,6 @@ public class UsuariosVista extends JFrame implements CRUDView {
     @Override
     public JButton getBtnEliminar() {
         return btnEliminar;
-    }
-
-    @Override
-    public JButton getBuscarButton() {
-        return buscarButton;
     }
 
     @Override

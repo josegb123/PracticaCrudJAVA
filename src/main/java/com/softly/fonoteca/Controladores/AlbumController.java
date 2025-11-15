@@ -9,7 +9,10 @@ import com.softly.fonoteca.utilities.FormatDates;
 import com.softly.fonoteca.utilities.SQLQuerys;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controlador principal para la gestión de Álbumes (Album).
@@ -19,6 +22,15 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
 
     // Campo estático para mantener la única instancia
     private static AlbumController instance;
+
+    // 🌟 1. DEFINICIÓN DE LA TABLA 🌟
+    private static final String TABLE_NAME = "albumnes"; // Corregido el nombre a 'albumnes' según tu uso en CancionController
+    private static final String[] DB_COLUMNS_TO_SHOW =
+            {"titulo", "selloDiscografico", "fechaLanzamiento", "idGeneroPrincipal"};
+
+    private static final String[] DISPLAY_COLUMNS_HEADERS =
+            {"Título", "Sello", "Lanzamiento", "Género ID"};
+
 
     /**
      * Constructor privado para la implementación del patrón Singleton.
@@ -30,11 +42,15 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
     private AlbumController(Album modelo, AlbumVista vista, AlbumDAO consultas, BaseView vistaPrincipal) {
         super(modelo, vista, consultas, vistaPrincipal);
 
-        // Inicialización de ComboBoxes y Listeners
+        // 1. Inicializar la tabla principal
+        this.mainTable = vista.tablaAlbumnes; // Usando el nombre de tabla que indicaste
+
+        // 2. Inicialización de ComboBoxes, tabla y Listeners
         vista.cmbGenero.setModel(SQLQuerys.consultarDatos("generos", "idGenero", "nombre"));
+        cargarTablaAlbumnes(); // Cargar datos iniciales
         agregarListeners();
 
-        // El controlador se inicia inmediatamente al ser creado.
+        // 3. El controlador se inicia inmediatamente al ser creado.
         iniciar();
     }
 
@@ -64,23 +80,23 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
     }
 
     /**
-     * Obtiene el ID del modelo para operaciones de búsqueda, modificación o eliminación.
-     * Se asume que el ID de búsqueda está en vista.txtSearch y debe ser numérico.
-     * @return El ID del álbum en formato entero.
+     * Carga la tabla de álbumes usando el método genérico del BaseController.
+     */
+    private void cargarTablaAlbumnes() {
+        cargarTabla(TABLE_NAME, DB_COLUMNS_TO_SHOW, DISPLAY_COLUMNS_HEADERS);
+    }
+
+    /**
+     * Obtiene el ID del DTO actual (modelo) para operaciones CRUD (modificar/eliminar).
+     * @return El ID del álbum.
      */
     @Override
     protected int getModelId() {
-        try {
-            return Integer.parseInt(vista.txtSearch.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(vista, "El ID de búsqueda debe ser un número válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
-            return 0;
-        }
+        return modelo.getIdAlbum(); // Usamos el ID del modelo cargado, no el campo de búsqueda
     }
 
     /**
      * Recolecta los datos de los campos de la vista y los asigna al DTO (modelo).
-     * Ejecuta validaciones simples antes de la asignación.
      * @return true si la recolección fue exitosa; false en caso contrario.
      */
     @Override
@@ -88,18 +104,26 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
         try {
             LocalDate fechaLanzamiento = FormatDates.getFormatDate(vista.txtFecha.getText());
 
+            // Asignación de ID (0 si es nuevo registro)
+            if (!vista.txtIdAlbum.getText().isEmpty()) {
+                modelo.setIdAlbum(Integer.parseInt(vista.txtIdAlbum.getText()));
+            } else {
+                modelo.setIdAlbum(0);
+            }
+
             modelo.setTitulo(vista.txtTitulo.getText());
             modelo.setSelloDiscografico(vista.txtSello.getText());
             modelo.setFechaLanzamiento(fechaLanzamiento);
+
             ComboBoxItem generoSeleccionado = (ComboBoxItem) vista.cmbGenero.getSelectedItem();
             modelo.setIdGeneroPrincipal(generoSeleccionado.getId());
+
             return true;
         } catch (Exception e) {
             System.err.println(STR."Error al recolectar datos: \{e.getMessage()}");
             JOptionPane.showMessageDialog(vista, STR."Error interno al recolectar datos: \{e.getMessage()}", "Error Crítico", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
     }
 
     /**
@@ -120,7 +144,6 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
         // B. Mostrar los datos en los campos de la vista
         vista.txtTitulo.setText(albumEncontrado.getTitulo());
         vista.txtSello.setText(albumEncontrado.getSelloDiscografico());
-        // Se asume la existencia de txtIdAlbum en la vista
         vista.txtIdAlbum.setText(String.valueOf(albumEncontrado.getIdAlbum()));
         vista.txtFecha.setText(albumEncontrado.getFechaLanzamiento().toString());
 
@@ -140,6 +163,41 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
         vista.txtIdAlbum.setText("");
         vista.txtFecha.setText("");
         vista.cmbGenero.setSelectedIndex(0);
+        vista.tablaAlbumnes.clearSelection(); // Limpiar selección de tabla
+    }
+
+    /**
+     * Implementa la lógica de selección de fila para cargar los campos de detalle del álbum.
+     */
+    private void cargarDetalleFilaSeleccionada(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting() && vista.tablaAlbumnes.getSelectedRow() != -1 && this.rawModel != null) {
+
+            int selectedRow = vista.tablaAlbumnes.getSelectedRow();
+
+            // 1. Mapeo de componentes (nombre de columna BD -> Componente de la vista)
+            Map<String, Object> componentMappings = new HashMap<>();
+            componentMappings.put("titulo", vista.txtTitulo);
+            componentMappings.put("selloDiscografico", vista.txtSello);
+            componentMappings.put("fechaLanzamiento", vista.txtFecha); // Asumiendo que txtFecha manejará el formato
+            componentMappings.put("idGeneroPrincipal", vista.cmbGenero); // ComboBox
+
+            // Usamos el método genérico para cargar los campos
+            loadTableDetailsToView(e, componentMappings);
+
+            try {
+                // 2. Manejo del ID (campo especial)
+                int col_id = rawModel.findColumn("idAlbum");
+                int idAlbum = (int) rawModel.getValueAt(selectedRow, col_id);
+
+                // Cargar ID al modelo y a la vista
+                modelo.setIdAlbum(idAlbum);
+                vista.txtIdAlbum.setText(String.valueOf(idAlbum));
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(vista, "Error al cargar datos del álbum: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                System.err.println("❌ ERROR al cargar detalles de la fila: " + ex.getMessage());
+            }
+        }
     }
 
     /**
@@ -147,15 +205,29 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
      */
     @Override
     protected void agregarListeners() {
-        // Listeners CRUD
-        vista.agregarButton.addActionListener(e -> registrar());
-        vista.modificarButton.addActionListener(e -> modificar());
-        vista.eliminarButton.addActionListener(e -> eliminar());
+        // Listener de la tabla para cargar detalles al seleccionar una fila
+        vista.tablaAlbumnes.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
+
+        // Listeners CRUD (Refrescar tabla después de la operación)
+        vista.agregarButton.addActionListener(_ -> {
+            registrar();
+            cargarTablaAlbumnes();
+        });
+        vista.modificarButton.addActionListener(_ -> {
+            modificar();
+            cargarTablaAlbumnes();
+        });
+        vista.eliminarButton.addActionListener(_ -> {
+            eliminar();
+            cargarTablaAlbumnes();
+        });
 
         // Listeners Funcionales
-        vista.regresarButton.addActionListener(e -> regresarAlMenu());
-        vista.buscarButton.addActionListener(e -> buscarRegistroPorId(getModelId()));
-        vista.limpiarCamposButton.addActionListener(e -> clearViewFields());
+        vista.regresarButton.addActionListener(_ -> regresarAlMenu());
+        vista.limpiarCamposButton.addActionListener(_ -> clearViewFields());
+
+        // ⚠️ NOTA: El botón buscar no tiene un listener asociado en el código original,
+        // por lo que se mantiene solo el listener de la tabla para la carga de detalles.
     }
 
     /**
@@ -164,7 +236,9 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
      */
     @Override
     public void iniciar() {
+        System.out.println("DEBUG: Se ha llamado a iniciar() para la vista: " + this.vista.getClass().getSimpleName());
         this.vista.pack();
+        // Usamos HIDE_ON_CLOSE para que la ventana permanezca cargada en memoria.
         this.vista.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.vista.setVisible(true);
         this.vista.setLocationRelativeTo(null);

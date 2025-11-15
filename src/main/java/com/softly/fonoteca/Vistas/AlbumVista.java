@@ -19,11 +19,11 @@ public class AlbumVista extends JFrame implements CRUDView {
     public JButton modificarButton;
     public JButton eliminarButton;
     public JButton limpiarCamposButton;
-    public JButton buscarButton;
     public JButton regresarButton;
+    public JTable tablaAlbumnes;
     public JTextField txtSearch;
 
-    public AlbumVista(){
+    public AlbumVista() {
         super.setContentPane(contentPane);
     }
 
@@ -41,11 +41,6 @@ public class AlbumVista extends JFrame implements CRUDView {
     @Override
     public JButton getBtnEliminar() {
         return eliminarButton;
-    }
-
-    @Override
-    public JButton getBuscarButton() {
-        return buscarButton;
     }
 
     @Override

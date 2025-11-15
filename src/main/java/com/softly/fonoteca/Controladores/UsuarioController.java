@@ -9,17 +9,17 @@ import com.softly.fonoteca.utilities.SecurityUtils;
 
 import javax.swing.*;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime; // Importación necesaria para el mapeo de fechaRegistro
 
 public class UsuarioController extends BaseController<Usuario, UsuariosVista, UsuarioDAO> {
 
     // 🌟 1. DEFINICIÓN DE COLUMNAS A MOSTRAR 🌟
-    // Columnas de la BD que queremos mostrar en la tabla (deben coincidir con el nombre de la columna en la BD)
     private static final String[] DB_COLUMNS_TO_SHOW =
             {"idUsuario", "email", "nombres", "paisNacimiento"};
 
-    // Nombres de las cabeceras que se mostrarán al usuario
     private static final String[] DISPLAY_COLUMNS_HEADERS =
             {"ID", "Email", "Nombre(s)", "País de Nacimiento"};
 
@@ -35,27 +35,24 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
     }
 
     /**
-     * 🌟 MÉTODO SIMPLIFICADO: Usa la implementación genérica del BaseController.
+     * Usa la implementación genérica del BaseController para cargar la tabla de usuarios.
      */
     private void cargarTablaUsuarios() {
-        // Llama al método del BaseController para cargar y filtrar la tabla.
         cargarTabla("usuarios", DB_COLUMNS_TO_SHOW, DISPLAY_COLUMNS_HEADERS);
-        // Si quisieras mostrar todas las columnas, usarías: cargarTabla("usuarios", null, null);
     }
-
-    // 🌟 MÉTODO ELIMINADO: transformarModeloUsuarios ya no es necesario.
-    // ...
 
     @Override
     protected int getModelId() {
         return modelo.getId();
     }
 
-    // --- MÉTODOS HEREDADOS Y ABSTRACTOS (Sin cambios en la lógica central) ---
+    // --- LÓGICA DE COLECCIÓN DE DATOS Y HASHING (Ajuste de seguridad) ---
 
     @Override
     protected boolean collectDataFromView() {
-        // ... (Tu lógica de recolección de datos se mantiene sin cambios) ...
+        char[] nuevaPasswordChars = null;
+        boolean success = true;
+
         try {
             // 1. Validar campos
             if (vista.txtEmail.getText().trim().isEmpty() || vista.txtNombre.getText().trim().isEmpty()) {
@@ -63,18 +60,27 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
                 return false;
             }
 
-            // 2. Recolectar datos de la vista y actualizar el modelo (incluyendo el ID)
-            LocalDate fechaNacimiento = FormatDates.getFormatDate(vista.txtFechaN.getText());
+            // Obtener contraseña como char[]
+            nuevaPasswordChars = vista.passField.getPassword();
 
-            // Manejo de la contraseña
-            String nuevaPassword = new String(vista.passField.getPassword());
-            if (!nuevaPassword.isEmpty()) {
-                modelo.setPassword(SecurityUtils.hashPassword(nuevaPassword));
+            // Manejo y Hashing de la Contraseña (Solo si no está vacía)
+            if (nuevaPasswordChars != null && nuevaPasswordChars.length > 0) {
+                // Generar hash BCrypt usando el char[]
+                String nuevoHash = SecurityUtils.hashPassword(nuevaPasswordChars);
+                modelo.setHashedPassword(nuevoHash);
             }
-            if (modelo.getId() == 0 && nuevaPassword.isEmpty()) {
+
+            // Validación de contraseña requerida para NUEVOS registros
+            if (modelo.getId() == 0 && (nuevaPasswordChars == null || nuevaPasswordChars.length == 0)) {
                 JOptionPane.showMessageDialog(vista, "La contraseña es requerida para nuevos registros.", "Validación", JOptionPane.WARNING_MESSAGE);
-                return false;
+                success = false;
             }
+
+            // Si falló la validación de contraseña, salimos.
+            if (!success) return false;
+
+            // 2. Recolectar datos del resto de la vista
+            LocalDate fechaNacimiento = FormatDates.getFormatDate(vista.txtFechaN.getText());
 
             modelo.setEmail(vista.txtEmail.getText());
             modelo.setNombres(vista.txtNombre.getText());
@@ -91,6 +97,12 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
             System.err.println(STR."Error de formato de fecha o datos: \{e.getMessage()}");
             JOptionPane.showMessageDialog(vista, STR."Error al procesar datos: \{e.getMessage()}", "Error Crítico", JOptionPane.ERROR_MESSAGE);
             return false;
+        } finally {
+            // --- BORRADO SEGURO DE MEMORIA ---
+            // Se ejecuta siempre para limpiar el array de caracteres
+            if (nuevaPasswordChars != null) {
+                Arrays.fill(nuevaPasswordChars, ' ');
+            }
         }
     }
 
@@ -100,7 +112,7 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
         // Se mantiene para el cumplimiento abstracto. Los datos se cargan desde la tabla.
         modelo.setId(usuarioEncontrado.getId());
         modelo.setEmail(usuarioEncontrado.getEmail());
-        modelo.setPassword(usuarioEncontrado.getPassword());
+        modelo.setHashedPassword(usuarioEncontrado.getHashedPassword());
         modelo.setNombres(usuarioEncontrado.getNombres());
         // ... (Cargar todas las propiedades del DTO) ...
 
@@ -159,7 +171,7 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
                 vista.passField.setText("********");
                 int col_password = rawModel.findColumn("password");
                 String hashedPassword = rawModel.getValueAt(selectedRow, col_password).toString();
-                modelo.setPassword(hashedPassword);
+                modelo.setHashedPassword(hashedPassword);
 
                 // Cargar Fechas y manejo de LocalDateTime
                 int col_fechaN = rawModel.findColumn("fechaNacimiento");
@@ -181,7 +193,8 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
 
                 // Mostrar en la vista (asumiendo que tienes txtFechaR)
                 vista.txtFechaN.setText(fechaNacimiento.toString());
-                vista.txtFechaR.setText(fechaRegistroLocal.toString()); // Descomenta si tienes este campo
+                // Asumiendo que existe un campo para fechaRegistro en la vista
+                // vista.txtFechaR.setText(fechaRegistroLocal.toString());
 
                 // Cargar al modelo (LocalDateTime requerido para fechaRegistro)
                 modelo.setFechaNacimiento(fechaNacimiento);
