@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Fonoteca:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Fonoteca_jar</output-path>
+    <root id="archive" name="Fonoteca.jar">
+      <element id="module-output" name="Fonoteca" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/at/favre/lib/bytes/1.5.0/bytes-1.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/at/favre/lib/bcrypt/0.10.2/bcrypt-0.10.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mariadb/jdbc/mariadb-java-client/3.5.3/mariadb-java-client-3.5.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/toedter/jcalendar/1.4/jcalendar-1.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/lgooddatepicker/LGoodDatePicker/11.2.1/LGoodDatePicker-11.2.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

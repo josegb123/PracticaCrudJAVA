@@ -45,7 +45,7 @@ public class SQLQuerys {
         }
 
         String columnNames = String.join(", ", columns);
-        String placeholders = String.join(", ", Arrays.stream(columns).map(_ -> "?").toArray(String[]::new));
+        String placeholders = String.join(", ", Arrays.stream(columns).map(e -> "?").toArray(String[]::new));
 
         switch (type) {
             case INSERT:

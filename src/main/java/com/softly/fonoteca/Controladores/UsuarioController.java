@@ -210,20 +210,20 @@ public class UsuarioController extends BaseController<Usuario, UsuariosVista, Us
         vista.tablaUsuarios.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD
-        vista.btnAgregar.addActionListener(_-> {
+        vista.btnAgregar.addActionListener(e -> {
             registrar();
             cargarTablaUsuarios(); // Refrescar la tabla después del CRUD
         });
-        vista.btnModificar.addActionListener(_-> {
+        vista.btnModificar.addActionListener(e -> {
             modificar();
             cargarTablaUsuarios(); // Refrescar la tabla después del CRUD
         });
-        vista.btnEliminar.addActionListener(_-> {
+        vista.btnEliminar.addActionListener(e -> {
             eliminar();
             cargarTablaUsuarios(); // Refrescar la tabla después del CRUD
         });
-        vista.btnLimpiar.addActionListener(_-> clearViewFields());
-        vista.regresarAlMenuButton.addActionListener(_-> regresarAlMenu());
+        vista.btnLimpiar.addActionListener(e -> clearViewFields());
+        vista.regresarAlMenuButton.addActionListener(e -> regresarAlMenu());
     }
 
     @Override

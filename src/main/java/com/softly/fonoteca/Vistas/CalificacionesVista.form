@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.softly.fonoteca.Vistas.CalificacionesVista">
   <grid id="27dc6" binding="contentPane" layout-manager="GridLayoutManager" row-count="9" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="50" left="50" bottom="50" right="50"/>
+    <margin top="10" left="50" bottom="50" right="50"/>
     <constraints>
-      <xy x="20" y="20" width="644" height="467"/>
+      <xy x="20" y="20" width="722" height="520"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-460059"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="a6833" class="javax.swing.JLabel">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <font size="28" style="1"/>
           <horizontalAlignment value="0"/>
+          <icon value="images/128/qualty.png"/>
           <text value="Calificaciones"/>
         </properties>
       </component>
-      <hspacer id="54467">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
       <component id="f0729" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Nombre cancion: "/>
@@ -43,7 +41,7 @@
       </component>
       <component id="8f8cb" class="javax.swing.JLabel">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Nombre: Usuario"/>
@@ -59,7 +57,7 @@
       </component>
       <component id="e6169" class="javax.swing.JLabel">
         <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Comentario: "/>
@@ -69,14 +67,14 @@
         <constraints>
           <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <minimum-size width="250" height="25"/>
-            <preferred-size width="150" height="50"/>
+            <preferred-size width="100" height="50"/>
           </grid>
         </constraints>
         <properties/>
       </component>
       <component id="ec044" class="javax.swing.JLabel">
         <constraints>
-          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Fecha calificacion: "/>
@@ -93,7 +91,7 @@
       </component>
       <component id="59341" class="javax.swing.JLabel">
         <constraints>
-          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Hora calificacion: "/>
@@ -110,7 +108,9 @@
       </component>
       <scrollpane id="a6ee0">
         <constraints>
-          <grid row="1" column="2" row-span="6" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="2" row-span="8" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="-1" height="250"/>
+          </grid>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -128,6 +128,8 @@
           </grid>
         </constraints>
         <properties>
+          <background color="-331277"/>
+          <icon value="images/24/save.png"/>
           <text value="Agregar"/>
         </properties>
       </component>
@@ -138,6 +140,8 @@
           </grid>
         </constraints>
         <properties>
+          <background color="-331277"/>
+          <icon value="images/24/edit.png"/>
           <text value="Modificar"/>
         </properties>
       </component>
@@ -148,6 +152,8 @@
           </grid>
         </constraints>
         <properties>
+          <background color="-331277"/>
+          <icon value="images/24/delete.png"/>
           <text value="Eliminar"/>
         </properties>
       </component>
@@ -158,12 +164,14 @@
           </grid>
         </constraints>
         <properties>
+          <background color="-331277"/>
+          <icon value="images/24/back.png"/>
           <text value="Regresar"/>
         </properties>
       </component>
       <component id="1ba45" class="javax.swing.JLabel">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Calificacion: "/>
@@ -172,6 +180,7 @@
       <component id="b5c06" class="javax.swing.JTextField" binding="txtCalificacion">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <minimum-size width="-1" height="25"/>
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>

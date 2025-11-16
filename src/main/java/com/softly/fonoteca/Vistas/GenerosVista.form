@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.softly.fonoteca.Vistas.GenerosVista">
   <grid id="27dc6" binding="contentPane" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="50" left="50" bottom="50" right="50"/>
+    <margin top="10" left="30" bottom="20" right="30"/>
     <constraints>
-      <xy x="20" y="20" width="674" height="400"/>
+      <xy x="20" y="20" width="834" height="770"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-921606"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="10739" class="javax.swing.JLabel">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <font size="28" style="1"/>
+          <icon value="images/128/genre.png"/>
           <text value="Generos"/>
         </properties>
       </component>
-      <hspacer id="6dfc6">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </hspacer>
       <component id="b8b1e" class="javax.swing.JLabel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -32,8 +30,8 @@
       </component>
       <component id="d259f" class="javax.swing.JTextField" binding="txtIdGenero">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="250" height="-1"/>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="250" height="25"/>
             <preferred-size width="150" height="-1"/>
             <maximum-size width="250" height="-1"/>
           </grid>
@@ -50,8 +48,8 @@
       </component>
       <component id="78d1a" class="javax.swing.JTextField" binding="txtNombre">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="250" height="-1"/>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="250" height="25"/>
             <preferred-size width="150" height="-1"/>
             <maximum-size width="250" height="-1"/>
           </grid>
@@ -60,7 +58,9 @@
       </component>
       <component id="d4043" class="javax.swing.JLabel">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="72" height="275"/>
+          </grid>
         </constraints>
         <properties>
           <text value="Descripcion: "/>
@@ -68,9 +68,9 @@
       </component>
       <component id="c887a" class="javax.swing.JTextArea" binding="txtDescripcion">
         <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="2" hsize-policy="6" anchor="1" fill="0" indent="0" use-parent-layout="false">
             <minimum-size width="250" height="300"/>
-            <preferred-size width="250" height="300"/>
+            <preferred-size width="250" height="275"/>
             <maximum-size width="250" height="300"/>
           </grid>
         </constraints>
@@ -80,64 +80,11 @@
           <wrapStyleWord value="true"/>
         </properties>
       </component>
-      <component id="8a4b3" class="javax.swing.JButton" binding="agregarButton" default-binding="true">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="150" height="-1"/>
-            <maximum-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Agregar"/>
-        </properties>
-      </component>
-      <component id="e682a" class="javax.swing.JButton" binding="modificarButton" default-binding="true">
-        <constraints>
-          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="150" height="-1"/>
-            <maximum-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Modificar"/>
-        </properties>
-      </component>
-      <component id="60adc" class="javax.swing.JButton" binding="eliminarButton" default-binding="true">
-        <constraints>
-          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="150" height="-1"/>
-            <maximum-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Eliminar"/>
-        </properties>
-      </component>
-      <component id="c5e0" class="javax.swing.JButton" binding="limpiarCamposButton" default-binding="true">
-        <constraints>
-          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="150" height="-1"/>
-            <maximum-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Limpiar Campos"/>
-        </properties>
-      </component>
-      <component id="1d7be" class="javax.swing.JButton" binding="regresarButton" default-binding="true">
-        <constraints>
-          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <minimum-size width="150" height="-1"/>
-            <maximum-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Regresar"/>
-        </properties>
-      </component>
       <scrollpane id="bb001">
         <constraints>
-          <grid row="1" column="2" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="2" row-span="3" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="-1" height="250"/>
+          </grid>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -148,6 +95,66 @@
           </component>
         </children>
       </scrollpane>
+      <component id="c5e0" class="javax.swing.JButton" binding="limpiarCamposButton" default-binding="true">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="250" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <background color="-197121"/>
+          <icon value="images/24/clean.png"/>
+          <text value="Limpiar Campos"/>
+        </properties>
+      </component>
+      <component id="8a4b3" class="javax.swing.JButton" binding="agregarButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <minimum-size width="250" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <background color="-197121"/>
+          <icon value="images/24/save.png"/>
+          <text value="Agregar"/>
+        </properties>
+      </component>
+      <component id="e682a" class="javax.swing.JButton" binding="modificarButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="250" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <background color="-197121"/>
+          <icon value="images/24/edit.png"/>
+          <text value="Modificar"/>
+        </properties>
+      </component>
+      <component id="60adc" class="javax.swing.JButton" binding="eliminarButton" default-binding="true">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="250" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <background color="-197121"/>
+          <icon value="images/24/delete.png"/>
+          <text value="Eliminar"/>
+        </properties>
+      </component>
+      <component id="1d7be" class="javax.swing.JButton" binding="regresarButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="250" height="25"/>
+          </grid>
+        </constraints>
+        <properties>
+          <background color="-197121"/>
+          <icon value="images/24/back.png"/>
+          <text value="Regresar"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

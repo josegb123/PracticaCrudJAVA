@@ -13,20 +13,26 @@ import com.softly.fonoteca.Vistas.*;
 public class MainController {
 
     private final MainView vistaPrincipal;
+    private final LoginVista login;
 
-    public MainController(MainView vistaPrincipal) {
+    public MainController(MainView vistaPrincipal, LoginVista login) {
         this.vistaPrincipal = vistaPrincipal;
+        this.login = login;
         agregarListeners();
     }
 
     private void agregarListeners() {
-        this.vistaPrincipal.cancionesButton.addActionListener(_-> launchCancionModule());
-        this.vistaPrincipal.usuariosButton.addActionListener(_-> launchUsuariosModule());
-        this.vistaPrincipal.reproduccionesButton.addActionListener(_->launchReproduccionesModule());
-        this.vistaPrincipal.calificacionesButton.addActionListener(_->launchComentariosModule());
-        this.vistaPrincipal.salirButton.addActionListener(_-> this.vistaPrincipal.dispose());
+        this.vistaPrincipal.cancionesButton.addActionListener(e -> launchCancionModule());
+        this.vistaPrincipal.usuariosButton.addActionListener(e -> launchUsuariosModule());
+        this.vistaPrincipal.reproduccionesButton.addActionListener(e ->launchReproduccionesModule());
+        this.vistaPrincipal.calificacionesButton.addActionListener(e ->launchComentariosModule());
+        this.vistaPrincipal.salirButton.addActionListener(e -> salir());
     }
 
+    private void salir(){
+        this.vistaPrincipal.dispose();
+        login.setVisible(true);
+    }
     private void launchReproduccionesModule() {
         this.vistaPrincipal.setVisible(false);
 

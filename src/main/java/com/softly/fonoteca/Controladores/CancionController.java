@@ -73,25 +73,25 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
         this.vista.tablaCanciones.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD
-        this.vista.getBtnAgregar().addActionListener(_ -> {
+        this.vista.getBtnAgregar().addActionListener(e -> {
             registrar();
             cargarTablaCanciones();
         });
-        this.vista.getBtnModificar().addActionListener(_ -> {
+        this.vista.getBtnModificar().addActionListener(e -> {
             modificar();
             cargarTablaCanciones();
         });
-        this.vista.getBtnEliminar().addActionListener(_ -> {
+        this.vista.getBtnEliminar().addActionListener(e -> {
             eliminar();
             cargarTablaCanciones();
         });
-        this.vista.getBtnLimpiar().addActionListener(_ -> clearViewFields());
+        this.vista.getBtnLimpiar().addActionListener(e -> clearViewFields());
 
         // Listeners de navegación (BaseController)
-        this.vista.getBtnRegresarMenu().addActionListener(_ -> regresarAlMenu());
+        this.vista.getBtnRegresarMenu().addActionListener(e -> regresarAlMenu());
 
         // Listeners a otras ventanas de administración
-        this.vista.administarAlbumnesButton.addActionListener(_ -> {
+        this.vista.administarAlbumnesButton.addActionListener(e -> {
             Album modeloAlbum = new Album();
             AlbumVista vistaAlbum = new AlbumVista();
             AlbumDAO consultasAlbum = new AlbumDAO();
@@ -99,8 +99,8 @@ public class CancionController extends BaseController<Cancion, CancionesVista, C
             this.vista.setVisible(false);
         });
 
-        this.vista.administrarGenerosButton.addActionListener(_ -> launchGeneros());
-        this.vista.administrarInterpretesButton.addActionListener(_ -> {
+        this.vista.administrarGenerosButton.addActionListener(e -> launchGeneros());
+        this.vista.administrarInterpretesButton.addActionListener(e -> {
             Interprete interprete = new Interprete();
             InterpretesVista interpretesVista = new InterpretesVista();
             InterpreteDAO interpreteDAO = new InterpreteDAO();

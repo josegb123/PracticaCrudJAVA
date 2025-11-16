@@ -239,22 +239,22 @@ public class InterpreteController extends BaseController<Interprete, Interpretes
         vista.tablaInterpretes.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD (Refrescar después de la operación)
-        vista.agregarButton.addActionListener(_ -> {
+        vista.agregarButton.addActionListener(e -> {
             registrar();
             cargarTablaInterpretes();
         });
-        vista.modificarButton.addActionListener(_ -> {
+        vista.modificarButton.addActionListener(e -> {
             modificar();
             cargarTablaInterpretes();
         });
-        vista.eliminarButton.addActionListener(_ -> {
+        vista.eliminarButton.addActionListener(e -> {
             eliminar();
             cargarTablaInterpretes();
         });
 
         // Listeners Funcionales
-        vista.regresarButton.addActionListener(_ -> regresarAlMenu());
-        vista.limpiarCamposButton.addActionListener(_ -> clearViewFields());
+        vista.regresarButton.addActionListener(e -> regresarAlMenu());
+        vista.limpiarCamposButton.addActionListener(e -> clearViewFields());
     }
 
     /**

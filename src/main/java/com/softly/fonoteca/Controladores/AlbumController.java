@@ -208,22 +208,22 @@ public class AlbumController extends BaseController<Album, AlbumVista, AlbumDAO>
         vista.tablaAlbumnes.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD (Refrescar tabla después de la operación)
-        vista.agregarButton.addActionListener(_ -> {
+        vista.agregarButton.addActionListener(e -> {
             registrar();
             cargarTablaAlbumnes();
         });
-        vista.modificarButton.addActionListener(_ -> {
+        vista.modificarButton.addActionListener(e -> {
             modificar();
             cargarTablaAlbumnes();
         });
-        vista.eliminarButton.addActionListener(_ -> {
+        vista.eliminarButton.addActionListener(e -> {
             eliminar();
             cargarTablaAlbumnes();
         });
 
         // Listeners Funcionales
-        vista.regresarButton.addActionListener(_ -> regresarAlMenu());
-        vista.limpiarCamposButton.addActionListener(_ -> clearViewFields());
+        vista.regresarButton.addActionListener(e -> regresarAlMenu());
+        vista.limpiarCamposButton.addActionListener(e -> clearViewFields());
 
 
     }

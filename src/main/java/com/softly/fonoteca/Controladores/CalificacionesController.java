@@ -259,12 +259,12 @@ public class CalificacionesController {
         vista.tablaCalificaciones.getSelectionModel().addListSelectionListener(this::handleTableSelection);
 
         // Listeners de botones CRUD
-        vista.agregarButton.addActionListener(_-> agregarCalificacion());
-        vista.modificarButton.addActionListener(_-> modificarCalificacion());
-        vista.eliminarButton.addActionListener(_-> eliminarCalificacion());
+        vista.agregarButton.addActionListener(e -> agregarCalificacion());
+        vista.modificarButton.addActionListener(e -> modificarCalificacion());
+        vista.eliminarButton.addActionListener(e -> eliminarCalificacion());
 
         // Listener para el botón de regresar.
-        vista.regresarButton.addActionListener(_-> cerrarVista());
+        vista.regresarButton.addActionListener(e -> cerrarVista());
     }
 
     /**

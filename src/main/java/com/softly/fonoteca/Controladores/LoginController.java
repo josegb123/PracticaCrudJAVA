@@ -19,7 +19,6 @@ public class LoginController {
     public LoginController(LoginVista vista, UsuarioDAO consultas) {
         this.vista = vista;
         this.consultas = consultas;
-        agregarListeners();
     }
 
     /**
@@ -46,6 +45,7 @@ public class LoginController {
     }
 
     protected void iniciarSesion() {
+        vista.setMessageAlert("");
         String email = vista.getTxtEmail().getText();
         char[] passwdChars = vista.getTxtPasswd().getPassword();
         Usuario usuarioAutenticado;
@@ -55,9 +55,9 @@ public class LoginController {
 
             if (usuarioAutenticado != null) {
                 MainView mainVista = new MainView();
-                MainController mainInicio = new MainController(mainVista);
+                MainController mainInicio = new MainController(mainVista,this.vista);
                 mainInicio.iniciar();
-                vista.dispose();
+                this.vista.setVisible(false);
             } else {
                 vista.setMessageAlert("Datos invalidos, intente de nuevo");
             }
@@ -90,13 +90,16 @@ public class LoginController {
     }
 
     public void iniciar() {
+        vista.setContentPane(vista.getContentPane());
+        vista.pack();
         vista.setVisible(true);
         vista.setLocationRelativeTo(null);
+        vista.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        agregarListeners();
     }
 
     protected void agregarListeners() {
-        vista.getIniciarSesionButton().addActionListener(_ -> iniciarSesion());
-
-        vista.getRegisterButton().addActionListener(_ -> iniciarRegistro());
+        vista.getIniciarSesionButton().addActionListener(e -> iniciarSesion());
+        vista.getRegisterButton().addActionListener(e -> iniciarRegistro());
     }
 }

@@ -115,8 +115,8 @@ public class RegisterController {
     }
 
     private void agregarListeners() {
-        vista.registrarButton.addActionListener(_ -> registrarUsuario());
-        vista.buttonCancel.addActionListener(_ -> cerrarVista());
+        vista.registrarButton.addActionListener(e -> registrarUsuario());
+        vista.buttonCancel.addActionListener(e -> cerrarVista());
     }
 
     private void cerrarVista() {

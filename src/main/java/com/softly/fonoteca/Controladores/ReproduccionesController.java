@@ -210,10 +210,10 @@ public class ReproduccionesController {
             }
         });
 
-        vista.agregarButton.addActionListener(_ -> agregarReproduccion());
-        vista.modificarButton.addActionListener(_ -> modificarReproduccion());
-        vista.eliminarButton.addActionListener(_ -> eliminarReproduccion());
-        vista.regresarButton.addActionListener(_ -> cerrarVista());
+        vista.agregarButton.addActionListener(e -> agregarReproduccion());
+        vista.modificarButton.addActionListener(e -> modificarReproduccion());
+        vista.eliminarButton.addActionListener(e -> eliminarReproduccion());
+        vista.regresarButton.addActionListener(e -> cerrarVista());
     }
 
     /**

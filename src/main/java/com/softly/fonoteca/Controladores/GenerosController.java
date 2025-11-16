@@ -156,21 +156,21 @@ public class GenerosController extends BaseController<Genero, GenerosVista, Gene
         vista.tablaGeneros.getSelectionModel().addListSelectionListener(this::cargarDetalleFilaSeleccionada);
 
         // Listeners CRUD (Refrescar tabla después de la operación)
-        vista.agregarButton.addActionListener(_ -> {
+        vista.agregarButton.addActionListener(e -> {
             registrar();
             cargarTablaGeneros();
         });
-        vista.eliminarButton.addActionListener(_ -> {
+        vista.eliminarButton.addActionListener(e -> {
             eliminar();
             cargarTablaGeneros();
         });
-        vista.modificarButton.addActionListener(_ -> {
+        vista.modificarButton.addActionListener(e -> {
             modificar();
             cargarTablaGeneros();
         });
 
-        vista.limpiarCamposButton.addActionListener(_ -> clearViewFields());
-        vista.regresarButton.addActionListener(_ -> regresarAlMenu());
+        vista.limpiarCamposButton.addActionListener(e -> clearViewFields());
+        vista.regresarButton.addActionListener(e -> regresarAlMenu());
     }
 
     @Override
